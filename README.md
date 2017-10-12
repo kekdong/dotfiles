@@ -1,2 +1,2 @@
-# my-dot-config
+# dotfiles
 Maintaining my Linux/Mac dot configuration files
