@@ -4,19 +4,15 @@ if [ -f /etc/profile ]; then
     PATH=""
     source /etc/profile
 fi
-
-#pyenv PATH
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
+PATH="$HOME/anaconda3/bin:$PATH"
+export TERM=xterm-24bit
 # Path to your oh-my-zsh installation.
-  export ZSH=$HOME/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="powerlevel9k/powerlevel9k"
+ZSH_THEME="agnoster"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -93,9 +89,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias ls='gls --color=auto'
-alias et='emacsclient -nw'
-#alias ssh="TERM=xterm-256color ssh"
-
+#alias et='emacsclient -nw'
+alias ssh="TERM=xterm-256color ssh"
 
 # For solarized dir colors
 eval `gdircolors $HOME/.solarized/dircolors-solarized/dircolors.256dark`
