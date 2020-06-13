@@ -36,7 +36,7 @@ let g:airline_powerline_fonts = 1
 set tabstop=4           " number of visual space per TAB
 set softtabstop=4       " number of spaces in tab when editing
 set shiftwidth=4        " 
-set expandtab           " tabs are spaces 
+set expandtab           " tabs are spaces TODO: 작업별로 파일별로 다르게 적용 
 set smartindent
 set autoindent
 
