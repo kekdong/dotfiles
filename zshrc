@@ -4,6 +4,9 @@ export ZDOTDIR="${ZDOTDIR:-$HOME}"
 export EDITOR="nvim"
 export VISUAL="$EDITOR"
 
+# Deduplicate search paths before manipulating PATH
+typeset -U path PATH
+
 # Locale
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -14,7 +17,7 @@ case "$(uname -s)" in
     export OS_FLAVOR="macos"
     export HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
     if [ -d "$HOMEBREW_PREFIX/bin" ]; then
-      export PATH="$HOMEBREW_PREFIX/bin:$PATH"
+      path=("$HOMEBREW_PREFIX/bin" $path)
     fi
     alias ls='ls -G'
     ;;
@@ -30,7 +33,7 @@ esac
 # pyenv setup (common for macOS/Linux)
 export PYENV_ROOT="$HOME/.pyenv"
 if [ -d "$PYENV_ROOT/bin" ]; then
-  export PATH="$PYENV_ROOT/bin:$PATH"
+  path=("$PYENV_ROOT/bin" $path)
 fi
 if command -v pyenv >/dev/null 2>&1; then
   eval "$(pyenv init --path)"
@@ -93,6 +96,7 @@ bindkey "^N" down-line-or-history
 alias grep='grep --color=auto'
 alias ll='ls -lah'
 alias gs='git status'
+alias vi='nvim'
 
 # Utility functions
 nvimdiffh() {
