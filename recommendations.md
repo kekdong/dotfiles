@@ -42,6 +42,11 @@
 - **장점:** RTX 5090 학습 시 실시간 리소스 확인, 프로세스 병목 파악 용이.
 - **Codex 메모:** GPU가 32GB VRAM이므로 `nvtop` 3.x 이상에서 제공하는 per-process VRAM 뷰 활용; tmux pane 업데이트 주기를 2s 이상으로 설정해 과도한 refresh 방지.
 
+## Day 8 — OSC52 기반 클립보드 통합 (Konsole + iTerm2)
+- **설정 요약:** `tmux.conf`에 `set -g set-clipboard on`을 추가하고 `tmux-yank`가 OSC52 문자열을 전송하도록 설정. Neovim에는 `ojroques/nvim-osc52`를 `lazy.nvim`으로 추가해 `y`, `yy`, 비주얼 모드 `y` 동작이 자동으로 시스템 클립보드에 동기화되도록 구성. Konsole에서는 “설정 ▸ 일감 ▸ 텍스트 ▸ 애플리케이션이 클립보드 접근 허용”을 활성화하고, iTerm2는 기본 OSC52 허용 상태를 유지.
+- **장점:** SSH/tmux/로컬 어디서든 동일한 복사·붙여넣기 경험 확보, 추가 바이너리 없이 Wayland/X11/macOS 간 호환, 기존 `tmux-yank` 플러그인과 자연스럽게 연동.
+- **Codex 메모:** tmux 3.2 이상에서 동작이 가장 안정적. 원격 서버에서 `Accept OSC 52`가 차단된 경우 `tmux set-option -sa terminal-overrides ',*:clipboard'`로 예외 처리 가능하며, 필요 시 `OSC52` 길이 제한도 `set -ga terminal-overrides ',*:Ms=80'` 등으로 조정.
+
 ---
 
 ## 향후 확장 아이디어
