@@ -78,7 +78,6 @@ znap source zsh-users/zsh-autosuggestions
 znap source zsh-users/zsh-syntax-highlighting
 
 # Native completion cache
-znap compinit
 
 # Prompt (Powerlevel10k with Nord accents)
 if [ ! -f "$HOME/.p10k.zsh" ]; then
