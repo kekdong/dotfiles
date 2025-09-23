@@ -1,96 +1,103 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-if [ -f /etc/profile ]; then
-    PATH=""
-    source /etc/profile
+# Zsh configuration optimized for Nord-themed environments
+
+export ZDOTDIR="${ZDOTDIR:-$HOME}"
+export EDITOR="nvim"
+export VISUAL="$EDITOR"
+
+# Locale
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# Paths
+case "$(uname -s)" in
+  Darwin)
+    export OS_FLAVOR="macos"
+    export HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+    if [ -d "$HOMEBREW_PREFIX/bin" ]; then
+      export PATH="$HOMEBREW_PREFIX/bin:$PATH"
+    fi
+    alias ls='ls -G'
+    ;;
+  Linux)
+    export OS_FLAVOR="linux"
+    alias ls='ls --color=auto'
+    ;;
+  *)
+    export OS_FLAVOR="unknown"
+    ;;
+esac
+
+# pyenv setup (common for macOS/Linux)
+export PYENV_ROOT="$HOME/.pyenv"
+if [ -d "$PYENV_ROOT/bin" ]; then
+  export PATH="$PYENV_ROOT/bin:$PATH"
 fi
-PATH="$HOME/anaconda3/bin:$PATH"
-export TERM=xterm-24bit
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+if command -v pyenv >/dev/null 2>&1; then
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+  if command -v pyenv-virtualenv-init >/dev/null 2>&1; then
+    eval "$(pyenv virtualenv-init -)"
+  fi
+fi
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="agnoster"
+# nvm setup
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+  source "$NVM_DIR/nvm.sh"
+fi
+if [ -s "$NVM_DIR/bash_completion" ]; then
+  source "$NVM_DIR/bash_completion"
+fi
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+# History configuration
+HISTSIZE=5000
+SAVEHIST=5000
+HISTFILE="$HOME/.zsh_history"
+setopt HIST_IGNORE_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# Performance options
+setopt prompt_subst
+setopt auto_cd correct
+unsetopt beep
+autoload -U colors && colors
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+# Bootstrap zsh-snap (fast plugin manager)
+ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
+if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
+  mkdir -p "$ZSH_SNAP_ROOT"
+  git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git "$ZSH_SNAP_ROOT/znap"
+fi
+source "$ZSH_SNAP_ROOT/znap/znap.zsh"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# Completions and plugins
+znap source zsh-users/zsh-completions
+znap source zsh-users/zsh-autosuggestions
+znap source zsh-users/zsh-syntax-highlighting
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# Native completion cache
+znap compinit
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# Prompt (Powerlevel10k with Nord accents)
+if [ ! -f "$HOME/.p10k.zsh" ]; then
+  ln -sf "$HOME/.dotfiles/p10k.zsh" "$HOME/.p10k.zsh"
+fi
+znap prompt romkatv/powerlevel10k
+[[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+# Keybindings
+bindkey -e
+bindkey "^P" up-line-or-history
+bindkey "^N" down-line-or-history
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+# Aliases
+alias grep='grep --color=auto'
+alias ll='ls -lah'
+alias gs='git status'
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
+# Utility functions
+nvimdiffh() {
+  command nvim -d "$@"
+}
 
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-alias ls='gls --color=auto'
-#alias et='emacsclient -nw'
-alias ssh="TERM=xterm-256color ssh"
-
-# For solarized dir colors
-eval `gdircolors $HOME/.solarized/dircolors-solarized/dircolors.256dark`
+# Fallback for tmux truecolor
+export TERM="xterm-256color"
