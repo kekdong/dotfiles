@@ -52,9 +52,64 @@ ensure_nvm() {
 
 log "Detecting platform..."
 OS_NAME="$(uname -s)"
+
+# macOS-specific bootstrap helpers
+ensure_homebrew() {
+  if command -v brew >/dev/null 2>&1; then
+    log "Homebrew already installed"
+    return
+  fi
+  if ! command -v curl >/dev/null 2>&1; then
+    log "Warning: curl not found; cannot install Homebrew automatically"
+    return
+  fi
+  log "Installing Homebrew (this may prompt for password)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
+    && log "Homebrew installation complete" \
+    || log "Warning: Homebrew install script failed"
+
+  # Add brew to PATH for Apple Silicon default path
+  if [ -d "/opt/homebrew/bin" ]; then
+    export PATH="/opt/homebrew/bin:$PATH"
+  fi
+}
+
+brew_install_cli() {
+  if ! command -v brew >/dev/null 2>&1; then
+    log "brew not available; skip package installation"
+    return
+  fi
+  log "Updating Homebrew"
+  brew update || true
+  # Core CLI set to complement zshrc aliases and Neovim setup
+  local pkgs=(
+    git
+    zsh
+    neovim
+    tmux
+    ripgrep
+    fd
+    fzf
+    bat
+    eza
+    lsd
+    zoxide
+    tldr
+  )
+  log "Installing CLI packages: ${pkgs[*]}"
+  brew install "${pkgs[@]}" || true
+
+  # Install fzf key-bindings if provided by brew
+  if [ -f "$(brew --prefix 2>/dev/null)/opt/fzf/install" ]; then
+    "$(brew --prefix)/opt/fzf/install" --no-bash --no-fish --key-bindings --completion || true
+  fi
+}
+
 case "$OS_NAME" in
   Darwin)
     log "macOS detected"
+    ensure_homebrew
+    brew_install_cli
     ;;
   Linux)
     log "Linux detected"
