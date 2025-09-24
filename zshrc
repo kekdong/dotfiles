@@ -122,9 +122,51 @@ bindkey "^N" down-line-or-history
 
 # Aliases
 alias grep='grep --color=auto'
-alias ll='ls -lah'
 alias gs='git status'
 alias vi='nvim'
+
+# Day 5: CLI essentials integration (bat, fd, lsd/exa, zoxide, tldr)
+# Prefer modern ls implementations
+if command -v lsd >/dev/null 2>&1; then
+  alias ls='lsd --group-dirs=first --icon=auto'
+  alias ll='lsd -lah --group-dirs=first --icon=auto'
+  alias la='lsd -la --group-dirs=first --icon=auto'
+  alias lt='lsd --tree --depth 2 --group-dirs=first --icon=auto'
+elif command -v eza >/dev/null 2>&1; then
+  alias ls='eza --group-directories-first --icons=auto'
+  alias ll='eza -lah --group-directories-first --icons=auto'
+  alias la='eza -la --group-directories-first --icons=auto'
+  alias lt='eza --tree --level=2 --group-directories-first --icons=auto'
+elif command -v exa >/dev/null 2>&1; then
+  alias ls='exa --group-directories-first --icons=auto'
+  alias ll='exa -lah --group-directories-first --icons=auto'
+  alias la='exa -la --group-directories-first --icons=auto'
+  alias lt='exa --tree --level=2 --group-directories-first --icons=auto'
+else
+  alias ll='ls -lah'
+  alias la='ls -la'
+  alias lt='ls -lah'
+fi
+
+# bat as pager/cat if available
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat --style=plain --paging=never'
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+elif command -v batcat >/dev/null 2>&1; then
+  alias cat='batcat --style=plain --paging=never'
+  export MANPAGER="sh -c 'col -bx | batcat -l man -p'"
+fi
+
+# zoxide (smart cd)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
+
+# tldr convenience
+if command -v tldr >/dev/null 2>&1; then
+  alias tl='tldr --color=always'
+  alias tldrup='tldr -u'
+fi
 
 # Utility functions
 nvimdiffh() {

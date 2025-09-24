@@ -121,3 +121,27 @@ fi
 log "Setup complete. Launch zsh and run 'tmux source-file ~/.tmux.conf' if tmux was already running."
 log "For Neovim plugin installation, start nvim; lazy.nvim will bootstrap itself automatically."
 log "Tip: On Arch, install extras: sudo pacman -S --needed ripgrep fd neovim tmux"
+
+# Optional: Arch package helper for Day5 CLI essentials
+arch_install_day5() {
+  if ! command -v pacman >/dev/null 2>&1; then
+    log "pacman not found; skip Day5 helper"
+    return
+  fi
+  local pkgs=(bat fd lsd tldr zoxide)
+  # exa is deprecated upstream; prefer eza if available in repo
+  if pacman -Si eza >/dev/null 2>&1; then
+    pkgs+=(eza)
+  else
+    pkgs+=(exa)
+  fi
+  log "Day5 suggested packages: ${pkgs[*]}"
+  if [ "${PACMAN_AUTO_INSTALL:-0}" = "1" ]; then
+    sudo pacman -S --needed "${pkgs[@]}"
+  else
+    log "To install Day5 set: sudo pacman -S --needed ${pkgs[*]}"
+  fi
+}
+
+# Uncomment to auto-run (requires sudo):
+# arch_install_day5
