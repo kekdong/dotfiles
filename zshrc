@@ -11,6 +11,9 @@ typeset -U path PATH
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
+# Telekasten vault (overridable)
+export TELEKASTEN_VAULT="${TELEKASTEN_VAULT:-$HOME/Workspace/Commonpalce-Book}"
+
 # Paths
 case "$(uname -s)" in
   Darwin)
@@ -76,6 +79,7 @@ source "$ZSH_SNAP_ROOT/znap/znap.zsh"
 # Completions and plugins
 znap source zsh-users/zsh-completions
 znap source zsh-users/zsh-autosuggestions
+znap source Aloxaf/fzf-tab
 znap source zsh-users/zsh-syntax-highlighting
 
 # Native completion cache
@@ -86,6 +90,30 @@ if [ ! -f "$HOME/.p10k.zsh" ]; then
 fi
 znap prompt romkatv/powerlevel10k
 [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+
+# fzf bindings and defaults (Arch Linux paths)
+if [ -f /usr/share/fzf/completion.zsh ]; then
+  source /usr/share/fzf/completion.zsh
+fi
+if [ -f /usr/share/fzf/key-bindings.zsh ]; then
+  source /usr/share/fzf/key-bindings.zsh
+fi
+
+# Prefer fd; fallback to ripgrep
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+elif command -v rg >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND="rg --files --hidden -g '!.git'"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND="rg --files --hidden -g '!.git' | xargs -r dirname | sort -u"
+fi
+
+# fzf-tab styles
+zstyle ':completion:*' menu select
+zstyle ':fzf-tab:*' switch-group 'ctrl-h' 'ctrl-l'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always -1 $realpath'
 
 # Keybindings
 bindkey -e

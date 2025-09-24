@@ -98,5 +98,25 @@ link_file "$DOTFILES_DIR/p10k.zsh" "$TARGET_HOME/.p10k.zsh"
 log "Linking Neovim configuration"
 link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
 
+# Telekasten vault + templates setup
+VAULT_DIR="${TELEKASTEN_VAULT:-$TARGET_HOME/Workspace/Commonpalce-Book}"
+log "Configuring Telekasten vault at $VAULT_DIR"
+mkdir -p "$VAULT_DIR/"{Templates,Daily,Weekly}
+if [ -d "$DOTFILES_DIR/nvim/telekasten_templates" ]; then
+  log "Syncing Telekasten templates (no overwrite)"
+  mkdir -p "$VAULT_DIR/Templates"
+  for f in "$DOTFILES_DIR"/nvim/telekasten_templates/*; do
+    [ -e "$f" ] || continue
+    base="$(basename "$f")"
+    if [ -e "$VAULT_DIR/Templates/$base" ]; then
+      log "template exists, skip: $base"
+    else
+      cp "$f" "$VAULT_DIR/Templates/$base"
+      log "installed template: $base"
+    fi
+  done
+fi
+
 log "Setup complete. Launch zsh and run 'tmux source-file ~/.tmux.conf' if tmux was already running."
 log "For Neovim plugin installation, start nvim; lazy.nvim will bootstrap itself automatically."
+log "Tip: On Arch, install extras: sudo pacman -S --needed ripgrep fd neovim tmux"

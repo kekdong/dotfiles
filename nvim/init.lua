@@ -1,5 +1,8 @@
 -- Neovim configuration migrated from legacy vimrc with Nord theme
 
+-- Set leader early so plugin keymaps use it
+vim.g.mapleader = " "
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -26,6 +29,43 @@ require("lazy").setup({
     end,
   },
   {
+    "nvim-telescope/telescope.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "Telescope",
+    keys = {
+      { "<leader>ff", function() require("telescope.builtin").find_files() end, desc = "Find files" },
+      { "<leader>fg", function() require("telescope.builtin").live_grep() end,  desc = "Live grep" },
+      { "<leader>fb", function() require("telescope.builtin").buffers() end,    desc = "Buffers" },
+      { "<leader>fh", function() require("telescope.builtin").help_tags() end,  desc = "Help tags" },
+    },
+    opts = function()
+      return {
+        defaults = {
+          prompt_prefix = "  ",
+          selection_caret = "> ",
+          sorting_strategy = "ascending",
+          layout_strategy = "flex",
+          layout_config = { prompt_position = "top", width = 0.95, height = 0.90 },
+        },
+        extensions = {
+          fzf = { fuzzy = true, case_mode = "smart_case" },
+        },
+      }
+    end,
+    config = function(_, opts)
+      local telescope = require("telescope")
+      telescope.setup(opts)
+      pcall(telescope.load_extension, "fzf")
+    end,
+  },
+  {
+    "nvim-telescope/telescope-fzf-native.nvim",
+    build = "make",
+    cond = function()
+      return vim.fn.executable("make") == 1
+    end,
+  },
+  {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
@@ -47,6 +87,33 @@ require("lazy").setup({
     keys = {
       { "<leader>n", "<cmd>NvimTreeToggle<cr>", desc = "Toggle file tree" },
     },
+  },
+  {
+    "renerocksai/telekasten.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
+    keys = {
+      { "<leader>zz", function() require("telekasten").panel() end,        desc = "Telekasten panel" },
+      { "<leader>zn", function() require("telekasten").new_note() end,      desc = "New note" },
+      { "<leader>zd", function() require("telekasten").goto_today() end,    desc = "Today (daily)" },
+      { "<leader>zf", function() require("telekasten").find_notes() end,    desc = "Find notes" },
+      { "<leader>zg", function() require("telekasten").search_notes() end,  desc = "Grep notes" },
+    },
+    opts = function()
+      local vault = vim.fn.expand(vim.env.TELEKASTEN_VAULT or "~/Workspace/Commonpalce-Book")
+      return {
+        home = vault,
+        dailies = "Daily",
+        weeklies = "Weekly",
+        templates = "Templates",
+        new_note_filename = "title",   -- ask for a title
+        uuid_type = "datetime",
+        template_new_note = "note.md",
+        template_new_daily = "daily.md",
+      }
+    end,
+    config = function(_, opts)
+      require("telekasten").setup(opts)
+    end,
   },
   {
     "tpope/vim-fugitive",
@@ -79,9 +146,6 @@ opt.hlsearch = true
 opt.backspace = "start,indent,eol"
 opt.clipboard = "unnamedplus"
 opt.updatetime = 300
-
--- Leader key
-vim.g.mapleader = " "
 
 -- Keymaps
 local keymap = vim.keymap
