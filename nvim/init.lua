@@ -102,13 +102,14 @@ require("lazy").setup({
       local vault = vim.fn.expand(vim.env.TELEKASTEN_VAULT or "~/Workspace/Commonpalce-Book")
       return {
         home = vault,
-        dailies = "Daily",
-        weeklies = "Weekly",
-        templates = "Templates",
+        -- Align with existing Obsidian settings
+        dailies = "Areas/Journal/Daily",
+        weeklies = "Areas/Journal/Weekly",
+        templates = "Resources/Templates",
         new_note_filename = "title",   -- ask for a title
         uuid_type = "datetime",
-        template_new_note = "note.md",
-        template_new_daily = "daily.md",
+        template_new_note = "default-note.md",
+        template_new_daily = "dailynote.md",
       }
     end,
     config = function(_, opts)

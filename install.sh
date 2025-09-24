@@ -98,20 +98,21 @@ link_file "$DOTFILES_DIR/p10k.zsh" "$TARGET_HOME/.p10k.zsh"
 log "Linking Neovim configuration"
 link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
 
-# Telekasten vault + templates setup
+# Telekasten vault + templates setup (Obsidian alignment)
 VAULT_DIR="${TELEKASTEN_VAULT:-$TARGET_HOME/Workspace/Commonpalce-Book}"
 log "Configuring Telekasten vault at $VAULT_DIR"
-mkdir -p "$VAULT_DIR/"{Templates,Daily,Weekly}
+# Match Obsidian config: Areas/Journal/Daily and Resources/Templates
+mkdir -p "$VAULT_DIR/Areas/Journal/Daily" "$VAULT_DIR/Areas/Journal/Weekly" "$VAULT_DIR/Resources/Templates"
 if [ -d "$DOTFILES_DIR/nvim/telekasten_templates" ]; then
-  log "Syncing Telekasten templates (no overwrite)"
-  mkdir -p "$VAULT_DIR/Templates"
+  log "Syncing Telekasten templates into Resources/Templates (no overwrite)"
+  VAULT_TEMPLATES_DIR="$VAULT_DIR/Resources/Templates"
   for f in "$DOTFILES_DIR"/nvim/telekasten_templates/*; do
     [ -e "$f" ] || continue
     base="$(basename "$f")"
-    if [ -e "$VAULT_DIR/Templates/$base" ]; then
+    if [ -e "$VAULT_TEMPLATES_DIR/$base" ]; then
       log "template exists, skip: $base"
     else
-      cp "$f" "$VAULT_DIR/Templates/$base"
+      cp "$f" "$VAULT_TEMPLATES_DIR/$base"
       log "installed template: $base"
     fi
   done
