@@ -98,6 +98,9 @@ link_file "$DOTFILES_DIR/p10k.zsh" "$TARGET_HOME/.p10k.zsh"
 log "Linking Neovim configuration"
 link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
 
+log "Linking bat configuration"
+link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
+
 # Telekasten vault + templates setup (Obsidian alignment)
 VAULT_DIR="${TELEKASTEN_VAULT:-$TARGET_HOME/Workspace/Commonpalce-Book}"
 log "Configuring Telekasten vault at $VAULT_DIR"
