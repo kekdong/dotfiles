@@ -1,0 +1,4 @@
+docs-local/
+*.swp
+*.swo
+.DS_Store
