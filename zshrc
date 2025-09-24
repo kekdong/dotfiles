@@ -175,3 +175,5 @@ nvimdiffh() {
 
 # Fallback for tmux truecolor
 export TERM="xterm-256color"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
