@@ -24,6 +24,7 @@ case "$(uname -s)" in
   Linux)
     export OS_FLAVOR="linux"
     alias ls='ls --color=auto'
+    alias nvitop='PYENV_VERSION=nvitop pyenv exec nvitop'
     ;;
   *)
     export OS_FLAVOR="unknown"
