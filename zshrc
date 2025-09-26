@@ -84,6 +84,47 @@ setopt auto_cd correct
 unsetopt beep
 autoload -U colors && colors
 
+# Terminal capability detection for UI fallbacks
+integer DOTFILES_IS_RAW_TTY=0 DOTFILES_HAS_TRUECOLOR=0
+case ${TERM:-dumb} in
+  linux|linux-16color|linux-256color|vt*|ansi|dumb|cons*)
+    DOTFILES_IS_RAW_TTY=1
+    ;;
+esac
+
+# Allow manual override for edge cases (0 or 1)
+if [[ ${DOTFILES_FORCE_TTY_FALLBACK:-} == 0 ]]; then
+  DOTFILES_IS_RAW_TTY=0
+elif [[ ${DOTFILES_FORCE_TTY_FALLBACK:-} == 1 ]]; then
+  DOTFILES_IS_RAW_TTY=1
+fi
+
+if command -v tput >/dev/null 2>&1; then
+  DOTFILES_TERM_COLORS=$(tput colors 2>/dev/null || printf '0')
+  if [[ ${DOTFILES_TERM_COLORS:-0} -ge 256 ]]; then
+    DOTFILES_HAS_TRUECOLOR=1
+  fi
+fi
+unset DOTFILES_TERM_COLORS
+if [[ ${DOTFILES_FORCE_TRUECOLOR:-} == 0 ]]; then
+  DOTFILES_HAS_TRUECOLOR=0
+elif [[ ${DOTFILES_FORCE_TRUECOLOR:-} == 1 ]]; then
+  DOTFILES_HAS_TRUECOLOR=1
+fi
+
+integer DOTFILES_ENABLE_NERD_FONT=1 DOTFILES_ENABLE_TRUECOLOR=${DOTFILES_HAS_TRUECOLOR}
+if (( DOTFILES_IS_RAW_TTY )); then
+  DOTFILES_ENABLE_NERD_FONT=0
+  DOTFILES_ENABLE_TRUECOLOR=0
+fi
+if [[ ${DOTFILES_FORCE_NERD_FONT:-} == 0 ]]; then
+  DOTFILES_ENABLE_NERD_FONT=0
+elif [[ ${DOTFILES_FORCE_NERD_FONT:-} == 1 ]]; then
+  DOTFILES_ENABLE_NERD_FONT=1
+fi
+
+export DOTFILES_ENABLE_NERD_FONT DOTFILES_ENABLE_TRUECOLOR DOTFILES_IS_RAW_TTY
+
 # Bootstrap zsh-snap (fast plugin manager)
 ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
 if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
@@ -144,20 +185,41 @@ alias vi='nvim'
 # Day 5: CLI essentials integration (bat, fd, lsd/exa, zoxide, tldr)
 # Prefer modern ls implementations
 if command -v lsd >/dev/null 2>&1; then
-  alias ls='lsd --group-dirs=first --icon=auto'
-  alias ll='lsd -lah --group-dirs=first --icon=auto'
-  alias la='lsd -la --group-dirs=first --icon=auto'
-  alias lt='lsd --tree --depth 2 --group-dirs=first --icon=auto'
+  if (( DOTFILES_ENABLE_NERD_FONT )); then
+    alias ls='lsd --group-dirs=first --icon=auto'
+    alias ll='lsd -lah --group-dirs=first --icon=auto'
+    alias la='lsd -la --group-dirs=first --icon=auto'
+    alias lt='lsd --tree --depth 2 --group-dirs=first --icon=auto'
+  else
+    alias ls='lsd --group-dirs=first --icon=never'
+    alias ll='lsd -lah --group-dirs=first --icon=never'
+    alias la='lsd -la --group-dirs=first --icon=never'
+    alias lt='lsd --tree --depth 2 --group-dirs=first --icon=never'
+  fi
 elif command -v eza >/dev/null 2>&1; then
-  alias ls='eza --group-directories-first --icons=auto'
-  alias ll='eza -lah --group-directories-first --icons=auto'
-  alias la='eza -la --group-directories-first --icons=auto'
-  alias lt='eza --tree --level=2 --group-directories-first --icons=auto'
+  if (( DOTFILES_ENABLE_NERD_FONT )); then
+    alias ls='eza --group-directories-first --icons=auto'
+    alias ll='eza -lah --group-directories-first --icons=auto'
+    alias la='eza -la --group-directories-first --icons=auto'
+    alias lt='eza --tree --level=2 --group-directories-first --icons=auto'
+  else
+    alias ls='eza --group-directories-first --icons=never'
+    alias ll='eza -lah --group-directories-first --icons=never'
+    alias la='eza -la --group-directories-first --icons=never'
+    alias lt='eza --tree --level=2 --group-directories-first --icons=never'
+  fi
 elif command -v exa >/dev/null 2>&1; then
-  alias ls='exa --group-directories-first --icons=auto'
-  alias ll='exa -lah --group-directories-first --icons=auto'
-  alias la='exa -la --group-directories-first --icons=auto'
-  alias lt='exa --tree --level=2 --group-directories-first --icons=auto'
+  if (( DOTFILES_ENABLE_NERD_FONT )); then
+    alias ls='exa --group-directories-first --icons=auto'
+    alias ll='exa -lah --group-directories-first --icons=auto'
+    alias la='exa -la --group-directories-first --icons=auto'
+    alias lt='exa --tree --level=2 --group-directories-first --icons=auto'
+  else
+    alias ls='exa --group-directories-first'
+    alias ll='exa -lah --group-directories-first'
+    alias la='exa -la --group-directories-first'
+    alias lt='exa --tree --level=2 --group-directories-first'
+  fi
 else
   alias ll='ls -lah'
   alias la='ls -la'
@@ -196,7 +258,9 @@ nvimdiffh() {
   command nvim -d "$@"
 }
 
-# Fallback for tmux truecolor
-export TERM="xterm-256color"
+# Fallback for tmux truecolor (respect raw TTYs)
+if (( ! DOTFILES_IS_RAW_TTY )); then
+  export TERM="xterm-256color"
+fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
