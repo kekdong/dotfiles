@@ -99,7 +99,22 @@ require("lazy").setup({
       { "<leader>zg", function() require("telekasten").search_notes() end,  desc = "Grep notes" },
     },
     opts = function()
-      local vault = vim.fn.expand(vim.env.TELEKASTEN_VAULT or "~/Workspace/Commonpalce-Book")
+      local vault = vim.env.TELEKASTEN_VAULT
+      if not vault or vault == "" then
+        local candidates = { "~/Workspace/Commonplace-Book", "~/Workspace/Commonpalce-Book" }
+        for _, c in ipairs(candidates) do
+          local p = vim.fn.expand(c)
+          if vim.fn.isdirectory(p) == 1 then
+            vault = p
+            break
+          end
+        end
+        if not vault or vault == "" then
+          vault = vim.fn.expand(candidates[#candidates])
+        end
+      else
+        vault = vim.fn.expand(vault)
+      end
       return {
         home = vault,
         -- Align with existing Obsidian settings

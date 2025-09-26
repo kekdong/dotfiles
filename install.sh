@@ -156,11 +156,58 @@ link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
 log "Linking bat configuration"
 link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
 
-# Telekasten vault + templates setup (Obsidian alignment)
-VAULT_DIR="${TELEKASTEN_VAULT:-$TARGET_HOME/Workspace/Commonpalce-Book}"
+#############################
+# Telekasten vault bootstrap
+#############################
+# Default vault path matches Obsidian vault repo name.
+# Note: GitHub repo is intentionally named 'Commonpalce-Book'.
+# Prefer an existing local vault if found (handles prior typos),
+# otherwise default to the repo's directory name.
+WORKSPACE_DIR="$TARGET_HOME/Workspace"
+DEFAULT_VAULT_A="$WORKSPACE_DIR/Commonplace-Book"
+DEFAULT_VAULT_B="$WORKSPACE_DIR/Commonpalce-Book"
+
+if [ -n "${TELEKASTEN_VAULT:-}" ]; then
+  # If env points to the misspelled path but the correct one exists, prefer the existing correct path
+  if [ "$TELEKASTEN_VAULT" = "$DEFAULT_VAULT_B" ] && [ -d "$DEFAULT_VAULT_A" ]; then
+    VAULT_DIR="$DEFAULT_VAULT_A"
+    log "TELEKASTEN_VAULT points to Commonpalce-Book; using existing Commonplace-Book instead"
+  else
+    VAULT_DIR="$TELEKASTEN_VAULT"
+  fi
+elif [ -d "$DEFAULT_VAULT_A" ]; then
+  VAULT_DIR="$DEFAULT_VAULT_A"
+else
+  VAULT_DIR="$DEFAULT_VAULT_B"
+fi
+
+REPO_URL="git@github.com:kekdong/Commonpalce-Book.git"
+
 log "Configuring Telekasten vault at $VAULT_DIR"
+
+# Ensure Workspace exists
+mkdir -p "$WORKSPACE_DIR"
+
+# If the vault directory doesn't exist, try to clone it first
+if [ ! -d "$VAULT_DIR" ]; then
+  if command -v git >/dev/null 2>&1; then
+    log "Vault not found; cloning Commonpalce-Book from $REPO_URL"
+    if git clone --depth 1 "$REPO_URL" "$VAULT_DIR"; then
+      log "Cloned vault repository to $VAULT_DIR"
+    else
+      log "Warning: failed to clone vault repository; creating directory instead"
+      mkdir -p "$VAULT_DIR"
+    fi
+  else
+    log "git not found; creating vault directory at $VAULT_DIR"
+    mkdir -p "$VAULT_DIR"
+  fi
+fi
+
 # Match Obsidian config: Areas/Journal/Daily and Resources/Templates
 mkdir -p "$VAULT_DIR/Areas/Journal/Daily" "$VAULT_DIR/Areas/Journal/Weekly" "$VAULT_DIR/Resources/Templates"
+
+# Sync Telekasten templates (do not overwrite existing files)
 if [ -d "$DOTFILES_DIR/nvim/telekasten_templates" ]; then
   log "Syncing Telekasten templates into Resources/Templates (no overwrite)"
   VAULT_TEMPLATES_DIR="$VAULT_DIR/Resources/Templates"

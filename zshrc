@@ -12,7 +12,13 @@ export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 
 # Telekasten vault (overridable)
-export TELEKASTEN_VAULT="${TELEKASTEN_VAULT:-$HOME/Workspace/Commonpalce-Book}"
+if [ -z "${TELEKASTEN_VAULT:-}" ]; then
+  if [ -d "$HOME/Workspace/Commonplace-Book" ]; then
+    export TELEKASTEN_VAULT="$HOME/Workspace/Commonplace-Book"
+  else
+    export TELEKASTEN_VAULT="$HOME/Workspace/Commonpalce-Book"
+  fi
+fi
 
 # Paths
 case "$(uname -s)" in
