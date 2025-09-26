@@ -33,23 +33,33 @@ case "$(uname -s)" in
   Linux)
     export OS_FLAVOR="linux"
     alias ls='ls --color=auto'
-    alias nvitop='PYENV_VERSION=nvitop pyenv exec nvitop'
     ;;
   *)
     export OS_FLAVOR="unknown"
     ;;
 esac
 
-# pyenv setup (common for macOS/Linux)
-export PYENV_ROOT="$HOME/.pyenv"
-if [ -d "$PYENV_ROOT/bin" ]; then
-  path=("$PYENV_ROOT/bin" $path)
+# Python tooling (uv-first)
+# Ensure user-local bin is in PATH so `uv tool install` shims are discoverable
+if [ -n "${XDG_BIN_HOME:-}" ]; then
+  path=("$XDG_BIN_HOME" $path)
+else
+  path=("$HOME/.local/bin" $path)
 fi
-if command -v pyenv >/dev/null 2>&1; then
-  eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
-  if command -v pyenv-virtualenv-init >/dev/null 2>&1; then
-    eval "$(pyenv virtualenv-init -)"
+
+# pyenv is disabled by default. Re-enable only if explicitly requested.
+# Set `ENABLE_PYENV=1` before launching the shell to turn this back on.
+if [ "${ENABLE_PYENV:-}" = "1" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  if [ -d "$PYENV_ROOT/bin" ]; then
+    path=("$PYENV_ROOT/bin" $path)
+  fi
+  if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init --path)"
+    eval "$(pyenv init -)"
+    if command -v pyenv-virtualenv-init >/dev/null 2>&1; then
+      eval "$(pyenv virtualenv-init -)"
+    fi
   fi
 fi
 
@@ -172,6 +182,13 @@ fi
 if command -v tldr >/dev/null 2>&1; then
   alias tl='tldr --color=always'
   alias tldrup='tldr -u'
+fi
+
+# nvitop via uv tool; fallback to `uvx` if not installed as a tool
+if ! command -v nvitop >/dev/null 2>&1; then
+  if command -v uvx >/dev/null 2>&1; then
+    alias nvitop='uvx nvitop'
+  fi
 fi
 
 # Utility functions
