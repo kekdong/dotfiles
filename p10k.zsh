@@ -19,7 +19,15 @@ typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=$'\ue0b3'
 # Nord-aligned colors
 typeset -g POWERLEVEL9K_DIR_BACKGROUND=4
 typeset -g POWERLEVEL9K_VCS_BACKGROUND=6
-typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=4
+# Remove background only for OS icon segment (keep others as-is)
+typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=
+## Add one space after OS icon content
+typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${P9K_CONTENT} '
+
+# Per-OS icon colors: Arch blue, Apple white
+# Note: colored icons override foreground for the glyph only.
+typeset -g POWERLEVEL9K_LINUX_ARCH_ICON='%F{blue}%f'
+typeset -g POWERLEVEL9K_APPLE_ICON='%F{white}%f'
 
 # Shorten directory path aggressively inside git repos
 typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
