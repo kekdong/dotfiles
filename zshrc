@@ -195,6 +195,7 @@ bindkey "^N" down-line-or-history
 alias grep='grep --color=auto'
 alias gs='git status'
 alias vi='nvim'
+alias vim='nvim'
 
 # Day 5: CLI essentials integration (bat, fd, lsd/exa, zoxide, tldr)
 # Prefer modern ls implementations
