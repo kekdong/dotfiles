@@ -28,10 +28,10 @@ typeset -g POWERLEVEL9K_STATUS_VERBOSE=false
 # Execution time displayed for commands taking >1s
 typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=1
 
-# Honor DOTFILES_ENABLE_NERD_FONT (0/1) exported from zshrc capability detection.
-typeset -g DOTFILES_ENABLE_NERD_FONT=${DOTFILES_ENABLE_NERD_FONT:-1}
+# Honor DOTFILES_UI_PROFILE exported from zshrc capability detection.
+typeset -g DOTFILES_UI_PROFILE=${DOTFILES_UI_PROFILE:-nerdfont-truecolor}
 
-if (( DOTFILES_ENABLE_NERD_FONT )); then
+if [[ ${DOTFILES_UI_PROFILE} == nerdfont-* ]]; then
   typeset -g POWERLEVEL9K_MODE='nerdfont-complete'
 
   # Prompt separators similar to agnoster
@@ -47,7 +47,7 @@ if (( DOTFILES_ENABLE_NERD_FONT )); then
   # Note: colored icons override foreground for the glyph only.
   typeset -g POWERLEVEL9K_LINUX_ARCH_ICON='%F{blue}%f'
   typeset -g POWERLEVEL9K_APPLE_ICON='%F{white}%f'
-else
+else # ascii-* profile
   typeset -g POWERLEVEL9K_MODE='ascii'
 
   # Simplified ASCII separators for raw TTYs

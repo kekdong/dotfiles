@@ -106,6 +106,7 @@ if command -v tput >/dev/null 2>&1; then
   fi
 fi
 unset DOTFILES_TERM_COLORS
+
 if [[ ${DOTFILES_FORCE_TRUECOLOR:-} == 0 ]]; then
   DOTFILES_HAS_TRUECOLOR=0
 elif [[ ${DOTFILES_FORCE_TRUECOLOR:-} == 1 ]]; then
@@ -123,7 +124,20 @@ elif [[ ${DOTFILES_FORCE_NERD_FONT:-} == 1 ]]; then
   DOTFILES_ENABLE_NERD_FONT=1
 fi
 
-export DOTFILES_ENABLE_NERD_FONT DOTFILES_ENABLE_TRUECOLOR DOTFILES_IS_RAW_TTY
+# Summarize capability profile for downstream configs and quick inspection
+typeset -g DOTFILES_UI_PROFILE='ascii-16color'
+if (( DOTFILES_ENABLE_NERD_FONT )); then
+  DOTFILES_UI_PROFILE='nerdfont-'
+else
+  DOTFILES_UI_PROFILE='ascii-'
+fi
+if (( DOTFILES_ENABLE_TRUECOLOR )); then
+  DOTFILES_UI_PROFILE+="truecolor"
+else
+  DOTFILES_UI_PROFILE+="16color"
+fi
+
+export DOTFILES_ENABLE_NERD_FONT DOTFILES_ENABLE_TRUECOLOR DOTFILES_IS_RAW_TTY DOTFILES_UI_PROFILE
 
 # Bootstrap zsh-snap (fast plugin manager)
 ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
@@ -184,47 +198,53 @@ alias vi='nvim'
 
 # Day 5: CLI essentials integration (bat, fd, lsd/exa, zoxide, tldr)
 # Prefer modern ls implementations
-if command -v lsd >/dev/null 2>&1; then
-  if (( DOTFILES_ENABLE_NERD_FONT )); then
-    alias ls='lsd --group-dirs=first --icon=auto'
-    alias ll='lsd -lah --group-dirs=first --icon=auto'
-    alias la='lsd -la --group-dirs=first --icon=auto'
-    alias lt='lsd --tree --depth 2 --group-dirs=first --icon=auto'
-  else
-    alias ls='lsd --group-dirs=first --icon=never'
-    alias ll='lsd -lah --group-dirs=first --icon=never'
-    alias la='lsd -la --group-dirs=first --icon=never'
-    alias lt='lsd --tree --depth 2 --group-dirs=first --icon=never'
+dotfiles_setup_ls_aliases() {
+  if command -v lsd >/dev/null 2>&1; then
+    local base="lsd --group-dirs=first"
+    if (( DOTFILES_ENABLE_NERD_FONT )); then
+      base+=" --icon=auto"
+    else
+      base+=" --icon=never"
+    fi
+    alias ls="${base}"
+    alias ll="${base} -lah"
+    alias la="${base} -la"
+    alias lt="${base} --tree --depth 2"
+    return
   fi
-elif command -v eza >/dev/null 2>&1; then
-  if (( DOTFILES_ENABLE_NERD_FONT )); then
-    alias ls='eza --group-directories-first --icons=auto'
-    alias ll='eza -lah --group-directories-first --icons=auto'
-    alias la='eza -la --group-directories-first --icons=auto'
-    alias lt='eza --tree --level=2 --group-directories-first --icons=auto'
-  else
-    alias ls='eza --group-directories-first --icons=never'
-    alias ll='eza -lah --group-directories-first --icons=never'
-    alias la='eza -la --group-directories-first --icons=never'
-    alias lt='eza --tree --level=2 --group-directories-first --icons=never'
+
+  if command -v eza >/dev/null 2>&1; then
+    local base="eza --group-directories-first"
+    if (( DOTFILES_ENABLE_NERD_FONT )); then
+      base+=" --icons=auto"
+    else
+      base+=" --icons=never"
+    fi
+    alias ls="${base}"
+    alias ll="${base} -lah"
+    alias la="${base} -la"
+    alias lt="${base} --tree --level=2"
+    return
   fi
-elif command -v exa >/dev/null 2>&1; then
-  if (( DOTFILES_ENABLE_NERD_FONT )); then
-    alias ls='exa --group-directories-first --icons=auto'
-    alias ll='exa -lah --group-directories-first --icons=auto'
-    alias la='exa -la --group-directories-first --icons=auto'
-    alias lt='exa --tree --level=2 --group-directories-first --icons=auto'
-  else
-    alias ls='exa --group-directories-first'
-    alias ll='exa -lah --group-directories-first'
-    alias la='exa -la --group-directories-first'
-    alias lt='exa --tree --level=2 --group-directories-first'
+
+  if command -v exa >/dev/null 2>&1; then
+    local base="exa --group-directories-first"
+    if (( DOTFILES_ENABLE_NERD_FONT )); then
+      base+=" --icons=auto"
+    fi
+    alias ls="${base}"
+    alias ll="${base} -lah"
+    alias la="${base} -la"
+    alias lt="${base} --tree --level=2"
+    return
   fi
-else
+
   alias ll='ls -lah'
   alias la='ls -la'
   alias lt='ls -lah'
-fi
+}
+dotfiles_setup_ls_aliases
+unset -f dotfiles_setup_ls_aliases
 
 # bat as pager/cat if available
 if command -v bat >/dev/null 2>&1; then
