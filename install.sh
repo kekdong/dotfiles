@@ -156,6 +156,9 @@ link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
 log "Linking bat configuration"
 link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
 
+log "Linking WezTerm configuration"
+link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.wezterm.lua"
+
 #############################
 # Telekasten vault bootstrap
 #############################
