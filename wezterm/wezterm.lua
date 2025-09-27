@@ -4,9 +4,25 @@ local config = wezterm.config_builder()
 
 config.enable_wayland = false
 config.color_scheme = 'Nord (base16)'
-config.font = wezterm.font 'D2CodingLigature Nerd Font'
 config.harfbuzz_features = { 'liga=0', 'clig=0', 'calt=0' }
 config.hide_tab_bar_if_only_one_tab = true
+
+local function platform_font()
+  if string.find(wezterm.target_triple, 'apple', 1, true) then
+    return wezterm.font_with_fallback {
+      'D2CodingLigature Nerd Font',
+      'JetBrainsMono Nerd Font',
+      'Menlo',
+    }
+  end
+  return wezterm.font_with_fallback {
+    'D2CodingLigature Nerd Font',
+    'JetBrainsMono Nerd Font',
+    'DejaVu Sans Mono',
+  }
+end
+
+config.font = platform_font()
 
 local nord = {
   polar0 = '#2E3440',
@@ -51,5 +67,14 @@ config.colors = {
     },
   },
 }
+
+wezterm.on('gui-startup', function(cmd)
+  local _, _, window = wezterm.mux.spawn_window(cmd or {})
+  local gui_window = window:gui_window()
+  if gui_window then
+    wezterm.log_info('Enabling fullscreen on startup')
+    gui_window:toggle_fullscreen()
+  end
+end)
 
 return config
