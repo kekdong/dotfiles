@@ -76,15 +76,7 @@ wezterm.on('gui-startup', function(cmd)
   local _, _, window = wezterm.mux.spawn_window(cmd or {})
   local gui_window = window:gui_window()
 
-  -- On macOS, enter native fullscreen (separate Space) at startup
-  if gui_window and string.find(wezterm.target_triple, 'apple', 1, true) then
-    wezterm.time.call_after(0.2, function()
-      gui_window:set_fullscreen(true)
-    end)
-    return
-  end
-
-  -- On non-macOS, keep prior behavior of starting fullscreen
+  -- keep prior behavior of starting fullscreen
   if gui_window then
     wezterm.time.call_after(0.1, function()
       gui_window:toggle_fullscreen()
