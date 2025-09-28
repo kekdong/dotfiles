@@ -7,8 +7,16 @@ config.color_scheme = 'Nord (base16)'
 config.harfbuzz_features = { 'liga=0', 'clig=0', 'calt=0' }
 config.hide_tab_bar_if_only_one_tab = true
 
+local is_apple = string.find(wezterm.target_triple, 'apple', 1, true) ~= nil
+
+if not is_apple then
+  -- Ensure IME works under XWayland/X11 on Linux
+  config.use_ime = true
+  config.xim_im_name = 'fcitx'
+end
+
 local function platform_font()
-  if string.find(wezterm.target_triple, 'apple', 1, true) then
+  if is_apple then
     return wezterm.font_with_fallback {
       'D2CodingLigature Nerd Font',
       'JetBrainsMono Nerd Font',
@@ -23,7 +31,7 @@ local function platform_font()
 end
 
 config.font = platform_font()
-if string.find(wezterm.target_triple, 'apple', 1, true) then
+if is_apple then
   config.native_macos_fullscreen_mode = true
   config.font_size = 14.0
 end
