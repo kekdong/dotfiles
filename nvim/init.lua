@@ -89,6 +89,37 @@ require("lazy").setup({
     },
   },
   {
+    "nvim-treesitter/nvim-treesitter",
+    build = ":TSUpdate",
+    dependencies = {
+      {
+        "OXY2DEV/markview.nvim",
+        lazy = false,
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {
+          preview = {
+            icon_provider = "devicons",
+            enable_hybrid_mode = true,
+            hybrid_modes = { "n", "i" },
+            linewise_hybrid_mode = true,
+            edit_range = { 2, 2 },
+          },
+        },
+        config = function(_, opts)
+          require("markview").setup(opts)
+        end,
+      },
+    },
+    opts = {
+      ensure_installed = { "lua", "markdown", "markdown_inline", "html" },
+      highlight = { enable = true },
+      indent = { enable = true, disable = { "markdown" } },
+    },
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+    end,
+  },
+  {
     "renerocksai/telekasten.nvim",
     dependencies = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
     keys = {
