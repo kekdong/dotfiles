@@ -36,7 +36,7 @@ if [[ ${DOTFILES_UI_PROFILE} == nerdfont-* ]]; then
 
   # Curved powerline separators (/ family)
   typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\ue0b4'
-  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'\ue0b4'
+  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'\ue0b6'
   typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=$'\ue0b5'
   typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=$'\ue0b7'
   typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=$'\ue0b6'
