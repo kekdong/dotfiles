@@ -102,7 +102,11 @@ require("lazy").setup({
             enable_hybrid_mode = true,
             hybrid_modes = { "n", "i" },
             linewise_hybrid_mode = true,
-            edit_range = { 2, 2 },
+            edit_range = { 10, 10 },
+            draw_range = { 40, 40 },
+            ignore_previews = {
+              markdown = { "headings" },
+            },
           },
         },
         config = function(_, opts)
@@ -201,6 +205,8 @@ keymap.set("n", "k", "gk")
 keymap.set("i", "jk", "<Esc>")
 keymap.set("n", "<leader>w", ":w<CR>")
 keymap.set("n", "<leader>q", ":q<CR>")
+keymap.set("n", "<leader>zt", "<cmd>Telekasten toggle_todo<CR>", { desc = "Toggle TODO" })
+keymap.set("v", "<leader>zt", ":Telekasten toggle_todo<CR>", { desc = "Toggle TODO" })
 
 -- Highlight last inserted text
 keymap.set("n", "gV", "`[v`]")
