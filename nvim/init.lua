@@ -69,12 +69,20 @@ require("lazy").setup({
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
+      local section_separators = { left = "", right = "" }
+      local component_separators = { left = "", right = "" }
+      local ui_profile = vim.env.DOTFILES_UI_PROFILE or ""
+      if ui_profile:match("^ascii") then
+        section_separators = { left = ">", right = "<" }
+        component_separators = { left = "|", right = "|" }
+      end
+
       require("lualine").setup({
         options = {
           theme = "nord",
           icons_enabled = true,
-          section_separators = { left = "", right = "" },
-          component_separators = { left = "", right = "" },
+          section_separators = section_separators,
+          component_separators = component_separators,
         },
       })
     end,

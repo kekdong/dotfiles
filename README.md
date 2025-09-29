@@ -21,3 +21,6 @@ Nord 중심 테마로 정리한 개인용 Linux/macOS dotfiles.
 ## 참고
 - macOS는 Homebrew(`/opt/homebrew`) 경로를 자동으로 앞에 둡니다.
 - `pyenv`가 설치되어 있으면 로그인 시 초기화합니다.
+
+## TODO
+- tmux/nvim/zsh 설정 분기와 상태바 주기 업데이트 로직은 후속 리팩터링 시 재검토 예정.

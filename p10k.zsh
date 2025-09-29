@@ -34,15 +34,11 @@ typeset -g DOTFILES_UI_PROFILE=${DOTFILES_UI_PROFILE:-nerdfont-truecolor}
 if [[ ${DOTFILES_UI_PROFILE} == nerdfont-* ]]; then
   typeset -g POWERLEVEL9K_MODE='nerdfont-complete'
 
-  # Curved powerline separators (/ family)
-  typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\ue0b4'
-  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'\ue0b6'
-  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=$'\ue0b5'
-  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=$'\ue0b7'
-  typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=$'\ue0b6'
-  typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=$'\ue0b4'
-  typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL=$'\ue0b6'
-  typeset -g POWERLEVEL9K_RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL=$'\ue0b4'
+  # Prompt separators similar to agnoster
+  typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\ue0b0'
+  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$'\ue0b2'
+  typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR=$'\ue0b1'
+  typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR=$'\ue0b3'
 
   ## Add one space after OS icon content
   typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='${P9K_CONTENT} '
@@ -54,9 +50,9 @@ if [[ ${DOTFILES_UI_PROFILE} == nerdfont-* ]]; then
 else # ascii-* profile
   typeset -g POWERLEVEL9K_MODE='ascii'
 
-  # Simplified ASCII separators with rounded vibe for raw TTYs
-  typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=')'
-  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='('
+  # Simplified ASCII separators for raw TTYs
+  typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR='>'
+  typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR='<'
   typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='|'
   typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='|'
 
