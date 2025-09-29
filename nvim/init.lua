@@ -126,12 +126,15 @@ require("lazy").setup({
   {
     "renerocksai/telekasten.nvim",
     dependencies = { "nvim-telescope/telescope.nvim", "renerocksai/calendar-vim" },
+    cmd = "Telekasten",
     keys = {
       { "<leader>zz", function() require("telekasten").panel() end,        desc = "Telekasten panel" },
       { "<leader>zn", function() require("telekasten").new_note() end,      desc = "New note" },
       { "<leader>zd", function() require("telekasten").goto_today() end,    desc = "Today (daily)" },
       { "<leader>zf", function() require("telekasten").find_notes() end,    desc = "Find notes" },
       { "<leader>zg", function() require("telekasten").search_notes() end,  desc = "Grep notes" },
+      { "<leader>zt", function() require("telekasten").toggle_todo() end,   desc = "Toggle TODO" },
+      { "<leader>zt", function() require("telekasten").toggle_todo({ v = true }) end, mode = "v", desc = "Toggle TODO" },
     },
     opts = function()
       local vault = vim.env.TELEKASTEN_VAULT
@@ -205,8 +208,5 @@ keymap.set("n", "k", "gk")
 keymap.set("i", "jk", "<Esc>")
 keymap.set("n", "<leader>w", ":w<CR>")
 keymap.set("n", "<leader>q", ":q<CR>")
-keymap.set("n", "<leader>zt", "<cmd>Telekasten toggle_todo<CR>", { desc = "Toggle TODO" })
-keymap.set("v", "<leader>zt", ":Telekasten toggle_todo<CR>", { desc = "Toggle TODO" })
-
 -- Highlight last inserted text
 keymap.set("n", "gV", "`[v`]")
