@@ -80,6 +80,17 @@ config.colors = {
   },
 }
 
+if is_apple then
+  wezterm.on('user-var-changed', function(window, pane, name, value)
+    if name == 'nvim_mode' and value == 'normal' then
+      local im_select = wezterm.which('im-select')
+      if im_select then
+        wezterm.run_child_process({ im_select, 'com.apple.keylayout.ABC' })
+      end
+    end
+  end)
+end
+
 wezterm.on('gui-startup', function(cmd)
   local _, _, window = wezterm.mux.spawn_window(cmd or {})
   local gui_window = window:gui_window()

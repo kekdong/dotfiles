@@ -210,6 +210,34 @@ opt.backspace = "start,indent,eol"
 opt.clipboard = "unnamedplus"
 opt.updatetime = 300
 
+-- Ensure Normal mode uses ASCII input for terminals with IME
+local function enforce_ascii_input()
+  local command
+  local is_mac = vim.fn.has("mac") == 1
+
+  if not is_mac then
+    if vim.fn.executable("fcitx5-remote") == 1 then
+      command = { "fcitx5-remote", "-c" }
+    elseif vim.fn.executable("fcitx-remote") == 1 then
+      command = { "fcitx-remote", "-c" }
+    end
+  else
+    if vim.env.WEZTERM_EXECUTABLE and vim.fn.executable("wezterm") == 1 then
+      command = { "wezterm", "cli", "set-user-var", "nvim_mode", "normal" }
+    elseif vim.fn.executable("im-select") == 1 then
+      command = { "im-select", "com.apple.keylayout.ABC" }
+    end
+  end
+
+  if command then
+    vim.fn.jobstart(command, { detach = true })
+  end
+end
+
+vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
+  callback = enforce_ascii_input,
+})
+
 -- Keymaps
 local keymap = vim.keymap
 keymap.set("n", "j", "gj")
