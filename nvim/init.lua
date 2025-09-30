@@ -90,23 +90,37 @@ require("lazy").setup({
   {
     "keaising/im-select.nvim",
     cond = function()
-      return vim.fn.has("mac") == 1 and vim.fn.executable("im-select") == 1
+      if vim.fn.has("mac") == 1 then
+        return vim.fn.executable("macism") == 1 or vim.fn.executable("im-select") == 1
+      end
+      return vim.fn.executable("fcitx5-remote") == 1 or vim.fn.executable("fcitx-remote") == 1 or vim.fn.executable("ibus") == 1
     end,
     config = function()
-      require("im_select").setup({
-        default_im_select = "com.apple.keylayout.ABC",
-        default_command = "im-select",
-        keep_quiet_on_no_change = true,
-      })
-    end,
-  },
-  {
-    "h-hg/fcitx.nvim",
-    cond = function()
-      return vim.fn.has("mac") == 0 and (vim.fn.executable("fcitx5-remote") == 1 or vim.fn.executable("fcitx-remote") == 1)
-    end,
-    config = function()
-      require("fcitx").setup({})
+      local opts = {
+        set_previous_events = {},
+        keep_quiet_on_no_binary = true,
+      }
+
+      if vim.fn.has("mac") == 1 then
+        if vim.fn.executable("macism") == 1 then
+          opts.default_command = "macism"
+          opts.default_im_select = "com.apple.keylayout.ABC"
+        else
+          opts.default_command = "im-select"
+          opts.default_im_select = "com.apple.keylayout.ABC"
+        end
+      elseif vim.fn.executable("fcitx5-remote") == 1 then
+        opts.default_command = "fcitx5-remote"
+        opts.default_im_select = "keyboard-us"
+      elseif vim.fn.executable("fcitx-remote") == 1 then
+        opts.default_command = "fcitx-remote"
+        opts.default_im_select = "1"
+      elseif vim.fn.executable("ibus") == 1 then
+        opts.default_command = { "ibus", "engine" }
+        opts.default_im_select = "xkb:us::eng"
+      end
+
+      require("im_select").setup(opts)
     end,
   },
   {
