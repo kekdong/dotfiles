@@ -105,11 +105,32 @@ brew_install_cli() {
   fi
 }
 
+install_im_select_cli() {
+  if ! command -v brew >/dev/null 2>&1; then
+    log "brew not available; skip im-select installation"
+    return
+  fi
+
+  if command -v im-select >/dev/null 2>&1; then
+    log "im-select already installed"
+    return
+  fi
+
+  if ! brew tap | grep -q '^daipeihust/tap$'; then
+    log "Adding daipeihust/tap for im-select"
+    brew tap daipeihust/tap || log "Warning: failed to add daipeihust/tap"
+  fi
+
+  log "Installing im-select CLI"
+  brew install daipeihust/tap/im-select || log "Warning: failed to install im-select"
+}
+
 case "$OS_NAME" in
   Darwin)
     log "macOS detected"
     ensure_homebrew
     brew_install_cli
+    install_im_select_cli
     ;;
   Linux)
     log "Linux detected"
