@@ -1,0 +1,14 @@
+version: "1"
+
+# Make LazyDocker use Podman for Compose actions.
+# Non-compose actions continue to use `docker` which is provided by the
+# `podman-docker` wrapper on Arch (so they route to Podman).
+commandTemplates:
+  dockerCompose: "podman-compose"
+  dockerComposeConfig: "podman-compose"
+
+# You can add more overrides here if needed, e.g.,
+# restartService, recreateService, etc. The bundled templates
+# reference {{ .DockerCompose }}, so changing the base above is enough
+# for most use-cases.
+

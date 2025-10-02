@@ -180,6 +180,9 @@ link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
 log "Linking WezTerm configuration"
 link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.wezterm.lua"
 
+log "Linking LazyDocker configuration"
+link_file "$DOTFILES_DIR/config/lazydocker/config.yml" "$TARGET_HOME/.config/lazydocker/config.yml"
+
 #############################
 # Telekasten vault bootstrap
 #############################
