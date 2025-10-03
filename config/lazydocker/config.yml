@@ -4,11 +4,24 @@ version: "1"
 # Non-compose actions continue to use `docker` which is provided by the
 # `podman-docker` wrapper on Arch (so they route to Podman).
 commandTemplates:
+  # Base binaries
   dockerCompose: "podman-compose"
   dockerComposeConfig: "podman-compose"
 
-# You can add more overrides here if needed, e.g.,
-# restartService, recreateService, etc. The bundled templates
-# reference {{ .DockerCompose }}, so changing the base above is enough
-# for most use-cases.
+  # General compose actions (common defaults)
+  upProject: "{{ .DockerCompose }} up -d"
+  downProject: "{{ .DockerCompose }} down"
+  restartProject: "{{ .DockerCompose }} restart"
+  viewProjectLogs: "{{ .DockerCompose }} logs --follow --tail=300"
+  buildProject: "{{ .DockerCompose }} build"
+  pullProject: "{{ .DockerCompose }} pull"
+
+  # Service-scoped actions
+  startService: "{{ .DockerCompose }} up -d {{ .Service.Name }}"
+  stopService: "{{ .DockerCompose }} stop {{ .Service.Name }}"
+  restartService: "{{ .DockerCompose }} restart {{ .Service.Name }}"
+  recreateService: "{{ .DockerCompose }} up -d --no-deps --force-recreate {{ .Service.Name }}"
+  buildService: "{{ .DockerCompose }} build {{ .Service.Name }}"
+  pullService: "{{ .DockerCompose }} pull {{ .Service.Name }}"
+  viewServiceLogs: "{{ .DockerCompose }} logs --follow --tail=300 {{ .Service.Name }}"
 
