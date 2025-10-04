@@ -18,13 +18,32 @@ end
 local function platform_font()
   if is_apple then
     return wezterm.font_with_fallback {
-      'D2CodingLigature Nerd Font',
+      -- macOS: prefer Term variant from jonz94 tap; also allow Mono
+      'Sarasa Term K Nerd Font',
+      'Sarasa Term J Nerd Font',
+      'Sarasa Term SC Nerd Font',
+      'Sarasa Term TC Nerd Font',
+      'Sarasa Mono K Nerd Font',
+      'Sarasa Mono J Nerd Font',
+      'Sarasa Mono SC Nerd Font',
+      'Sarasa Mono TC Nerd Font',
+      -- Fallbacks
       'JetBrainsMono Nerd Font',
       'Menlo',
     }
   end
   return wezterm.font_with_fallback {
-    'D2CodingLigature Nerd Font',
+    -- Linux: prefer jonz94 variants (AUR: ttf-sarasa-gothic-nerd-fonts)
+    'Sarasa Term K Nerd Font',
+    'Sarasa Term J Nerd Font',
+    'Sarasa Term SC Nerd Font',
+    'Sarasa Term TC Nerd Font',
+    -- Also accept Mono if installed
+    'Sarasa Mono K Nerd Font',
+    'Sarasa Mono J Nerd Font',
+    'Sarasa Mono SC Nerd Font',
+    'Sarasa Mono TC Nerd Font',
+    -- Fallbacks
     'JetBrainsMono Nerd Font',
     'DejaVu Sans Mono',
   }

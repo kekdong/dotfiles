@@ -125,18 +125,83 @@ install_im_select_cli() {
   brew install daipeihust/tap/im-select || log "Warning: failed to install im-select"
 }
 
+install_sarasa_nerd_font_macos() {
+  if ! command -v brew >/dev/null 2>&1; then
+    return
+  fi
+
+  # Prefer Term K (Korean) variant for terminal usage
+  local tap="jonz94/sarasa-nerd-fonts"
+  local cask="font-sarasa-term-k-nerd-font"
+
+  if ! brew tap | grep -q "^${tap}$"; then
+    log "Adding ${tap} tap for Sarasa Nerd Fonts"
+    brew tap "${tap}" || { log "Warning: failed to add ${tap}"; return; }
+  fi
+
+  if brew list --cask 2>/dev/null | grep -q "^${cask}$"; then
+    log "${cask} already installed via Homebrew cask"
+  else
+    log "Installing ${cask} via Homebrew cask"
+    brew install "${tap}/${cask}" || log "Warning: failed to install ${cask}"
+  fi
+}
+
 case "$OS_NAME" in
   Darwin)
     log "macOS detected"
     ensure_homebrew
     brew_install_cli
     install_im_select_cli
+    install_sarasa_nerd_font_macos
     ;;
   Linux)
     log "Linux detected"
     ;;
   *)
     log "Warning: unsupported OS ($OS_NAME). Proceeding with generic setup."
+    ;;
+ esac
+
+# Arch Linux: install Sarasa Nerd Font via AUR helper if available
+install_sarasa_nerd_font_arch() {
+  if ! command -v pacman >/dev/null 2>&1; then
+    return
+  fi
+
+  # Skip if already present
+  if command -v fc-list >/dev/null 2>&1; then
+    if fc-list | grep -qiE 'Sarasa.*Nerd\s*Font'; then
+      log "Sarasa Nerd Font already installed (fontconfig detected)"
+      return
+    fi
+  fi
+
+  local helper=""
+  if command -v yay >/dev/null 2>&1; then
+    helper="yay"
+  elif command -v paru >/dev/null 2>&1; then
+    helper="paru"
+  fi
+
+  if [ -n "$helper" ]; then
+    log "Installing Sarasa Nerd Font using $helper (ttf-sarasa-gothic-nerd-fonts)"
+    if ! $helper -S --needed ttf-sarasa-gothic-nerd-fonts; then
+      log "Warning: $helper failed to install ttf-sarasa-gothic-nerd-fonts"
+    fi
+  else
+    log "AUR helper not found; install manually: yay -S ttf-sarasa-gothic-nerd-fonts"
+  fi
+
+  if command -v fc-cache >/dev/null 2>&1; then
+    log "Refreshing font cache"
+    fc-cache -fv || true
+  fi
+}
+
+case "$OS_NAME" in
+  Linux)
+    install_sarasa_nerd_font_arch
     ;;
  esac
 
