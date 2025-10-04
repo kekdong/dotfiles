@@ -130,7 +130,7 @@ install_sarasa_nerd_font_macos() {
     return
   fi
 
-  # Prefer Term K (Korean) variant for terminal usage
+  # Simplified: Term K (Korean) variant only
   local tap="jonz94/sarasa-nerd-fonts"
   local cask="font-sarasa-term-k-nerd-font"
 
@@ -161,41 +161,45 @@ case "$OS_NAME" in
   *)
     log "Warning: unsupported OS ($OS_NAME). Proceeding with generic setup."
     ;;
- esac
+esac
 
-# Arch Linux: install Sarasa Nerd Font via AUR helper if available
+## Linux/Arch: simplified install for Sarasa Term K Nerd Font only
 install_sarasa_nerd_font_arch() {
-  if ! command -v pacman >/dev/null 2>&1; then
-    return
-  fi
-
-  # Skip if already present
+  # If present, skip
   if command -v fc-list >/dev/null 2>&1; then
-    if fc-list | grep -qiE 'Sarasa.*Nerd\s*Font'; then
-      log "Sarasa Nerd Font already installed (fontconfig detected)"
+    if fc-list | grep -qi 'Sarasa\s*Term\s*K\s*Nerd\s*Font'; then
+      log "Sarasa Term K Nerd Font already installed"
       return
     fi
   fi
 
-  local helper=""
-  if command -v yay >/dev/null 2>&1; then
-    helper="yay"
-  elif command -v paru >/dev/null 2>&1; then
-    helper="paru"
+  local fonts_dir="$TARGET_HOME/.local/share/fonts/sarasa-term-k-nerd"
+  mkdir -p "$fonts_dir"
+  local zip_url="https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts/releases/latest/download/sarasa-term-k-nerd-font.zip"
+  local tmp_zip
+  tmp_zip="$(mktemp -t sarasa-term-k-nerd.XXXXXX.zip)"
+
+  log "Downloading Sarasa Term K Nerd Font (latest release)"
+  if ! curl -fL "$zip_url" -o "$tmp_zip"; then
+    log "Warning: download failed: $zip_url"
+    rm -f "$tmp_zip"
+    return
   fi
 
-  if [ -n "$helper" ]; then
-    log "Installing Sarasa Nerd Font using $helper (ttf-sarasa-gothic-nerd-fonts)"
-    if ! $helper -S --needed ttf-sarasa-gothic-nerd-fonts; then
-      log "Warning: $helper failed to install ttf-sarasa-gothic-nerd-fonts"
-    fi
+  if command -v unzip >/dev/null 2>&1; then
+    unzip -o "$tmp_zip" -d "$fonts_dir" >/dev/null 2>&1 || true
+  elif command -v bsdtar >/dev/null 2>&1; then
+    bsdtar -xf "$tmp_zip" -C "$fonts_dir" || true
   else
-    log "AUR helper not found; install manually: yay -S ttf-sarasa-gothic-nerd-fonts"
+    log "Warning: unzip or bsdtar required to extract fonts"
+    rm -f "$tmp_zip"
+    return
   fi
+  rm -f "$tmp_zip"
 
   if command -v fc-cache >/dev/null 2>&1; then
     log "Refreshing font cache"
-    fc-cache -fv || true
+    fc-cache -fv "$fonts_dir" || true
   fi
 }
 
