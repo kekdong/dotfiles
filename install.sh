@@ -163,43 +163,35 @@ case "$OS_NAME" in
     ;;
 esac
 
-## Linux/Arch: simplified install for Sarasa Term K Nerd Font only
+## Linux/Arch: use AUR helper to install Term (SC) Nerd font for simplicity
 install_sarasa_nerd_font_arch() {
-  # If present, skip
+  # If present, skip (match both naming variants)
   if command -v fc-list >/dev/null 2>&1; then
-    if fc-list | grep -qi 'Sarasa\s*Term\s*K\s*Nerd\s*Font'; then
-      log "Sarasa Term K Nerd Font already installed"
+    if fc-list | grep -qiE 'Sarasa\s*Term.*Nerd(\s*Font)?'; then
+      log "Sarasa Term Nerd Font already installed"
       return
     fi
   fi
 
-  local fonts_dir="$TARGET_HOME/.local/share/fonts/sarasa-term-k-nerd"
-  mkdir -p "$fonts_dir"
-  local zip_url="https://github.com/jonz94/Sarasa-Gothic-Nerd-Fonts/releases/latest/download/sarasa-term-k-nerd-font.zip"
-  local tmp_zip
-  tmp_zip="$(mktemp -t sarasa-term-k-nerd.XXXXXX.zip)"
+  local helper=""
+  if command -v yay >/dev/null 2>&1; then
+    helper="yay"
+  elif command -v paru >/dev/null 2>&1; then
+    helper="paru"
+  fi
 
-  log "Downloading Sarasa Term K Nerd Font (latest release)"
-  if ! curl -fL "$zip_url" -o "$tmp_zip"; then
-    log "Warning: download failed: $zip_url"
-    rm -f "$tmp_zip"
+  if [ -z "$helper" ]; then
+    log "AUR helper not found; install manually: yay -S nerd-fonts-sarasa-term"
     return
   fi
 
-  if command -v unzip >/dev/null 2>&1; then
-    unzip -o "$tmp_zip" -d "$fonts_dir" >/dev/null 2>&1 || true
-  elif command -v bsdtar >/dev/null 2>&1; then
-    bsdtar -xf "$tmp_zip" -C "$fonts_dir" || true
-  else
-    log "Warning: unzip or bsdtar required to extract fonts"
-    rm -f "$tmp_zip"
-    return
-  fi
-  rm -f "$tmp_zip"
+  # Use laishulu package (Sarasa Term SC Nerd TTC). K 전용 패키지는 AUR에 없음.
+  log "Installing Sarasa Term (SC) Nerd via AUR: nerd-fonts-sarasa-term"
+  $helper -S --needed nerd-fonts-sarasa-term || log "Warning: failed to install nerd-fonts-sarasa-term"
 
   if command -v fc-cache >/dev/null 2>&1; then
     log "Refreshing font cache"
-    fc-cache -fv "$fonts_dir" || true
+    fc-cache -fv || true
   fi
 }
 

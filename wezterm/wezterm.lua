@@ -33,11 +33,12 @@ local function platform_font()
     }
   end
   return wezterm.font_with_fallback {
-    -- Linux: prefer jonz94 variants (AUR: ttf-sarasa-gothic-nerd-fonts)
+    -- Linux: prefer Term variants; include laishulu AUR naming
     'Sarasa Term K Nerd Font',
     'Sarasa Term J Nerd Font',
     'Sarasa Term SC Nerd Font',
     'Sarasa Term TC Nerd Font',
+    'Sarasa Term SC Nerd', -- AUR nerd-fonts-sarasa-term family name
     -- Also accept Mono if installed
     'Sarasa Mono K Nerd Font',
     'Sarasa Mono J Nerd Font',
