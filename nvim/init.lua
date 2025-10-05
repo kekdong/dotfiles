@@ -224,6 +224,33 @@ require("lazy").setup({
       require("gitsigns").setup()
     end,
   },
+  -- Fallback OSC52 clipboard provider for Neovim < 0.10
+  {
+    "ojroques/nvim-osc52",
+    lazy = false,
+    priority = 900,
+    cond = function()
+      return vim.fn.has("nvim-0.10") == 0
+    end,
+    config = function()
+      -- Configure plugin and register as clipboard provider
+      require("osc52").setup({ max_length = 0, silent = true, trim = true })
+
+      local function copy(lines, _)
+        require("osc52").copy(table.concat(lines, "\n"))
+      end
+
+      local function paste()
+        return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
+      end
+
+      vim.g.clipboard = {
+        name = "osc52",
+        copy = { ["+"] = copy, ["*"] = copy },
+        paste = { ["+"] = paste, ["*"] = paste },
+      }
+    end,
+  },
 })
 
 -- General options
@@ -245,6 +272,13 @@ opt.hlsearch = true
 opt.backspace = "start,indent,eol"
 opt.clipboard = "unnamedplus"
 opt.updatetime = 300
+
+-- Prefer Neovim 0.10+ built-in OSC52 clipboard provider when available
+if vim.fn.has("nvim-0.10") == 1 then
+  -- This tells Neovim to use the built-in OSC52 provider for '+/* registers'
+  -- and works well with modern terminals (including WezTerm).
+  vim.g.clipboard = "osc52"
+end
 
 -- Keymaps
 local keymap = vim.keymap
