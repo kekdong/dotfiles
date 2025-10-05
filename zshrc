@@ -208,23 +208,9 @@ alias gs='git status'
 alias vi='nvim'
 alias vim='nvim'
 
-# Day 5: CLI essentials integration (bat, fd, lsd/exa, zoxide, tldr)
-# Prefer modern ls implementations
+# Day 5: CLI essentials integration (bat, fd, eza, zoxide, tldr)
+# Prefer eza; fallback to exa; else stock ls
 dotfiles_setup_ls_aliases() {
-  if command -v lsd >/dev/null 2>&1; then
-    local base="lsd --group-dirs=first"
-    if (( DOTFILES_ENABLE_NERD_FONT )); then
-      base+=" --icon=auto"
-    else
-      base+=" --icon=never"
-    fi
-    alias ls="${base}"
-    alias ll="${base} -lah"
-    alias la="${base} -la"
-    alias lt="${base} --tree --depth 2"
-    return
-  fi
-
   if command -v eza >/dev/null 2>&1; then
     local base="eza --group-directories-first"
     if (( DOTFILES_ENABLE_NERD_FONT )); then

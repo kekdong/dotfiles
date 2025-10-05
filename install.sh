@@ -92,7 +92,6 @@ brew_install_cli() {
     fzf
     bat
     eza
-    lsd
     zoxide
     tldr
   )

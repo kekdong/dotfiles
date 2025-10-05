@@ -28,9 +28,9 @@
 - **Codex 메모:** 기존 Nord 테마 유지 위해 `status-left`, `status-right` 색상은 Nord 팔레트(#3B4252 등)로 맞춤 필요.
 
 ## Day 5 — CLI 필수 도구 세트 확장
-- **설정 요약:** `bat`, `fd`, `lsd`, `exa`(선호 시), `zoxide`, `tldr` 등을 Arch 패키지로 설치하고 zsh alias/function으로 통합.
+- **설정 요약:** `bat`, `fd`, `eza`, `zoxide`, `tldr` 등을 설치하고 zsh alias/function으로 통합.
 - **장점:** 기본 `ls`/`cat` 대비 시인성과 탐색 속도 향상, 대규모 코드베이스 추적 효율 개선.
-- **Codex 메모:** GPU 연산 작업에 영향 없으며, 패키지 설치 후 `zshrc` alias 충돌 여부 확인.
+- **Codex 메모:** GPU 연산 작업에 영향 없으며, 패키지 설치 후 `zshrc` alias 충돌 여부 확인. `exa`는 유지보수 중단 추세라 `eza` 권장.
 
 ## Day 6 — Git 워크플로 자동화 스크립트
 - **설정 요약:** `scripts/` 디렉터리에 공통 Git 액션(예: 린트+테스트+커밋 템플릿)을 추가하고, Zsh alias로 연결.
