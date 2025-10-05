@@ -283,9 +283,20 @@ nvimdiffh() {
   command nvim -d "$@"
 }
 
-# Fallback for tmux truecolor (respect raw TTYs)
+# Fallback for truecolor ONLY on legacy/unknown terminals
+# Do not override TERM in WezTerm/tmux/modern terminals.
 if (( ! DOTFILES_IS_RAW_TTY )); then
-  export TERM="xterm-256color"
+  # Avoid changing TERM inside tmux or when terminal already sets a good value
+  if [[ -z "${TMUX:-}" ]]; then
+    case "${TERM:-}" in
+      ""|dumb|xterm|xterm-color)
+        export TERM="xterm-256color"
+        ;;
+      *)
+        # Keep terminal-provided TERM (e.g. wezterm, tmux-256color, screen-256color)
+        ;;
+    esac
+  fi
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

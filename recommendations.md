@@ -49,6 +49,15 @@
 
 ---
 
+## Day 9 — 터미널 Capabilities 정리 (TERM 완화 + Focus Events)
+- 설정 요약:
+  - TERM 완화: 모든 머신에서 WezTerm 사용을 전제로, Zsh에서 임의로 `TERM`을 덮어쓰지 않도록 완화. 레거시/모호한 값(`""`, `dumb`, `xterm`, `xterm-color`)만 `xterm-256color`로 보정하고 tmux 세션 내부(`$TMUX` 존재)에서는 변경하지 않음.
+  - tmux 포커스 이벤트: `set -g focus-events on`으로 애플리케이션(NVim 등)으로 포커스 in/out 이벤트 전달.
+- 장점: 터미널이 제공하는 최적의 `$TERM`(예: `wezterm`)을 그대로 사용하여 색/키/마우스/OSC 연계 신뢰성 향상. 포커스 이벤트 전달로 NVim 플러그인/자동 기능이 상황을 더 정확히 파악.
+- Codex 메모: `$TERM`을 전역으로 강제하면 tmux 내부나 특정 터미널(kitty/alacritty 등)에서 예기치 못한 키/색 문제를 유발할 수 있음. 포커스 이벤트는 일부 오래된 터미널에서 과도한 리프레시를 유발할 수 있으나 WezTerm에서는 안정적.
+
+---
+
 ## 향후 확장 아이디어
 - Arch용 `paru`/`yay` 스크립트 추가로 AUR 패키지 동기화 자동화.
 - `chezmoi` 또는 `stow`를 활용한 dotfiles 버전관리를 실험하여 멀티머신 동기화 준비.
