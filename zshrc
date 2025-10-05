@@ -143,6 +143,13 @@ fi
 
 export DOTFILES_ENABLE_NERD_FONT DOTFILES_ENABLE_TRUECOLOR DOTFILES_IS_RAW_TTY DOTFILES_UI_PROFILE
 
+# Hint 24-bit color support to apps that check COLORTERM
+if (( DOTFILES_ENABLE_TRUECOLOR )); then
+  export COLORTERM=truecolor
+else
+  unset COLORTERM
+fi
+
 # Bootstrap zsh-snap (fast plugin manager)
 ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
 if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
