@@ -239,7 +239,9 @@ log "Linking bat configuration"
 link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
 
 log "Linking WezTerm configuration"
+# Support both legacy home path and XDG path; WezTerm recognizes both.
 link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.wezterm.lua"
+link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.config/wezterm/wezterm.lua"
 
 log "Linking LazyDocker configuration"
 link_file "$DOTFILES_DIR/config/lazydocker/config.yml" "$TARGET_HOME/.config/lazydocker/config.yml"
