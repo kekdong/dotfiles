@@ -52,6 +52,13 @@ end
 
 config.font = platform_font()
 if is_apple then
+  -- Ensure macOS uses native IME and that IME commits before newline
+  -- This helps prevent the last Hangul syllable from wrapping onto the next line
+  -- when pressing Enter at EOL in some shells/apps.
+  config.use_ime = true
+  -- Forward Shift and Ctrl to IME so Shift+Space (input source toggle)
+  -- and Ctrl+J (newline in some apps) both commit IME composition first.
+  config.macos_forward_to_ime_modifier_mask = 'SHIFT|CTRL'
   config.native_macos_fullscreen_mode = true
   config.font_size = 14.0
 end
