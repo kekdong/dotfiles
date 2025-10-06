@@ -94,6 +94,10 @@ brew_install_cli() {
     eza
     zoxide
     tldr
+    git-delta
+    direnv
+    just
+    jq
   )
   log "Installing CLI packages: ${pkgs[*]}"
   brew install "${pkgs[@]}" || true
@@ -162,6 +166,23 @@ case "$OS_NAME" in
     ;;
 esac
 
+pacman_install_cli() {
+  if ! command -v pacman >/dev/null 2>&1; then
+    return
+  fi
+
+  local pkgs=(ripgrep fd neovim tmux git-delta direnv just jq)
+
+  if [ "${PACMAN_AUTO_INSTALL:-0}" = "1" ]; then
+    log "Installing CLI packages via pacman: ${pkgs[*]}"
+    if ! sudo pacman -S --needed "${pkgs[@]}"; then
+      log "Warning: failed to install packages: ${pkgs[*]}"
+    fi
+  else
+    log "Tip: On Arch, install extras: sudo pacman -S --needed ${pkgs[*]}"
+  fi
+}
+
 ## Linux/Arch: use AUR helper to install Term (SC) Nerd font for simplicity
 install_sarasa_nerd_font_arch() {
   # If present, skip (match both naming variants)
@@ -196,6 +217,7 @@ install_sarasa_nerd_font_arch() {
 
 case "$OS_NAME" in
   Linux)
+    pacman_install_cli
     install_sarasa_nerd_font_arch
     ;;
  esac
@@ -314,7 +336,7 @@ fi
 
 log "Setup complete. Launch zsh and run 'tmux source-file ~/.tmux.conf' if tmux was already running."
 log "For Neovim plugin installation, start nvim; lazy.nvim will bootstrap itself automatically."
-log "Tip: On Arch, install extras: sudo pacman -S --needed ripgrep fd neovim tmux"
+log "Tip: On Arch, set PACMAN_AUTO_INSTALL=1 to auto-install CLI essentials."
 
 # Optional: Arch package helper for Day5 CLI essentials
 arch_install_day5() {
