@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
-config.enable_wayland = false
+config.enable_wayland = true
 config.color_scheme = 'Nord (base16)'
 config.harfbuzz_features = { 'liga=0', 'clig=0', 'calt=0' }
 config.hide_tab_bar_if_only_one_tab = true
