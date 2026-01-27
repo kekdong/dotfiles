@@ -183,6 +183,43 @@ pacman_install_cli() {
   fi
 }
 
+install_wezterm_arch() {
+  if ! command -v pacman >/dev/null 2>&1; then
+    return
+  fi
+
+  local helper=""
+  if command -v yay >/dev/null 2>&1; then
+    helper="yay"
+  elif command -v paru >/dev/null 2>&1; then
+    helper="paru"
+  fi
+
+  # Prefer AUR builds (wezterm-git/nightly) on KDE Wayland + NVIDIA.
+  if [ -z "$helper" ]; then
+    log "Tip: Install WezTerm via AUR (recommended): yay -S --needed wezterm-git"
+    return
+  fi
+
+  # If repo wezterm is installed, AUR variants usually conflict; don't try to auto-remove.
+  if pacman -Qq wezterm >/dev/null 2>&1; then
+    log "Note: pacman package 'wezterm' is installed; remove it before switching to AUR: sudo pacman -Rns wezterm"
+    return
+  fi
+
+  if pacman -Qq wezterm-git >/dev/null 2>&1 || pacman -Qq wezterm-nightly-bin >/dev/null 2>&1; then
+    log "WezTerm already installed via AUR"
+    return
+  fi
+
+  if [ "${AUR_AUTO_INSTALL:-0}" = "1" ]; then
+    log "Installing WezTerm via AUR helper ($helper): wezterm-git"
+    $helper -S --needed wezterm-git || log "Warning: failed to install wezterm-git"
+  else
+    log "Tip: On Arch, install WezTerm via AUR: $helper -S --needed wezterm-git"
+  fi
+}
+
 ## Linux/Arch: use AUR helper to install Term (SC) Nerd font for simplicity
 install_sarasa_nerd_font_arch() {
   # If present, skip (match both naming variants)
@@ -219,6 +256,7 @@ case "$OS_NAME" in
   Linux)
     pacman_install_cli
     install_sarasa_nerd_font_arch
+    install_wezterm_arch
     ;;
  esac
 
