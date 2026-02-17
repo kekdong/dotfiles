@@ -2,17 +2,25 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
-config.enable_wayland = true
+-- Default to XWayland for IME/focus stability on KDE Wayland.
+-- Re-evaluate Wayland with the checklist in docs/wezterm-wayland.md.
+config.enable_wayland = false
 config.color_scheme = 'Nord (base16)'
 config.harfbuzz_features = { 'liga=0', 'clig=0', 'calt=0' }
 config.hide_tab_bar_if_only_one_tab = true
 
 local is_apple = string.find(wezterm.target_triple, 'apple', 1, true) ~= nil
+local is_wayland = config.enable_wayland
 
 if not is_apple then
-  -- Ensure IME works under XWayland/X11 on Linux
+  -- Enable IME and keep preedit anchored in terminal cells on Linux.
   config.use_ime = true
-  config.xim_im_name = 'fcitx'
+  config.ime_preedit_rendering = 'Builtin'
+
+  -- XIM is only relevant for X11/XWayland sessions.
+  if not is_wayland then
+    config.xim_im_name = 'fcitx'
+  end
 end
 
 local function platform_font()

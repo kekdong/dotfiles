@@ -58,3 +58,54 @@ echo $XDG_SESSION_TYPE
 ```bash
 RUST_BACKTRACE=1 wezterm start --always-new-process
 ```
+
+## Wayland Re-enable Checklist (IME/Focus Regression)
+
+Current default in this repo is `config.enable_wayland = false` due to intermittent IME desync after app/workspace switches (notably returning from Chromium).
+
+When trying Wayland again, run this checklist before keeping the change.
+
+1) Switch config
+
+```lua
+config.enable_wayland = true
+```
+
+2) Restart WezTerm fully (close all windows) and verify backend
+
+```bash
+xlsclients | rg -i wezterm || echo "No X11 client (likely Wayland-native)"
+```
+
+3) Core IME test (`Shift+Space`)
+- In WezTerm: toggle Korean/English 20+ times while typing in shell and Neovim.
+- Expected: no missed toggles, no stuck English-only state.
+
+4) Focus transition stress test
+- Sequence: `WezTerm -> Chromium -> another workspace -> WezTerm`.
+- Repeat 20+ cycles.
+- Expected: first `Shift+Space` works immediately after returning to WezTerm.
+
+5) Preedit/candidate position test
+- While composing Hangul near end-of-line and after scrolling:
+- Expected: preedit/candidate UI stays anchored to text, not detached below.
+
+6) Multi-tab/workspace test in WezTerm
+- Switch tabs/panes/workspaces while composition is active.
+- Expected: composition state remains consistent and committed text is correct.
+
+7) Capture diagnostics if any failure appears
+
+```bash
+wezterm --version
+qdbus6 org.fcitx.Fcitx5 /controller org.fcitx.Fcitx.Controller1.DebugInfo | sed -n '1,200p'
+fcitx5-remote
+fcitx5-remote -n
+```
+
+8) Rollback rule
+- If any regression is reproducible, revert to:
+
+```lua
+config.enable_wayland = false
+```
