@@ -150,35 +150,37 @@ else
   unset COLORTERM
 fi
 
-# Bootstrap zsh-snap (fast plugin manager)
-ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
-if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
-  mkdir -p "$ZSH_SNAP_ROOT"
-  git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git "$ZSH_SNAP_ROOT/znap"
-fi
-source "$ZSH_SNAP_ROOT/znap/znap.zsh"
+if [[ -o interactive ]]; then
+  # Bootstrap zsh-snap (fast plugin manager)
+  ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
+  if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
+    mkdir -p "$ZSH_SNAP_ROOT"
+    git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git "$ZSH_SNAP_ROOT/znap"
+  fi
+  source "$ZSH_SNAP_ROOT/znap/znap.zsh"
 
-# Completions and plugins
-znap source zsh-users/zsh-completions
-znap source zsh-users/zsh-autosuggestions
-znap source Aloxaf/fzf-tab
-znap source zsh-users/zsh-syntax-highlighting
+  # Completions and plugins
+  znap source zsh-users/zsh-completions
+  znap source zsh-users/zsh-autosuggestions
+  znap source Aloxaf/fzf-tab
+  znap source zsh-users/zsh-syntax-highlighting
 
-# Native completion cache
+  # Native completion cache
 
-# Prompt (Powerlevel10k with Nord accents)
-if [ ! -f "$HOME/.p10k.zsh" ]; then
-  ln -sf "$HOME/.dotfiles/p10k.zsh" "$HOME/.p10k.zsh"
-fi
-znap prompt romkatv/powerlevel10k
-[[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
+  # Prompt (Powerlevel10k with Nord accents)
+  if [ ! -f "$HOME/.p10k.zsh" ]; then
+    ln -sf "$HOME/.dotfiles/p10k.zsh" "$HOME/.p10k.zsh"
+  fi
+  znap prompt romkatv/powerlevel10k
+  [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
-# fzf bindings and defaults (Arch Linux paths)
-if [ -f /usr/share/fzf/completion.zsh ]; then
-  source /usr/share/fzf/completion.zsh
-fi
-if [ -f /usr/share/fzf/key-bindings.zsh ]; then
-  source /usr/share/fzf/key-bindings.zsh
+  # fzf bindings and defaults (Arch Linux paths)
+  if [ -f /usr/share/fzf/completion.zsh ]; then
+    source /usr/share/fzf/completion.zsh
+  fi
+  if [ -f /usr/share/fzf/key-bindings.zsh ]; then
+    source /usr/share/fzf/key-bindings.zsh
+  fi
 fi
 
 # Prefer fd; fallback to ripgrep
@@ -192,15 +194,17 @@ elif command -v rg >/dev/null 2>&1; then
   export FZF_ALT_C_COMMAND="rg --files --hidden -g '!.git' | xargs -r dirname | sort -u"
 fi
 
-# fzf-tab styles
-zstyle ':completion:*' menu select
-zstyle ':fzf-tab:*' switch-group 'ctrl-h' 'ctrl-l'
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always -1 $realpath'
+if [[ -o interactive ]]; then
+  # fzf-tab styles
+  zstyle ':completion:*' menu select
+  zstyle ':fzf-tab:*' switch-group 'ctrl-h' 'ctrl-l'
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always -1 $realpath'
 
-# Keybindings
-bindkey -e
-bindkey "^P" up-line-or-history
-bindkey "^N" down-line-or-history
+  # Keybindings
+  bindkey -e
+  bindkey "^P" up-line-or-history
+  bindkey "^N" down-line-or-history
+fi
 
 # Aliases
 alias grep='grep --color=auto'
@@ -292,4 +296,6 @@ if (( ! DOTFILES_IS_RAW_TTY )); then
   fi
 fi
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [[ -o interactive ]]; then
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fi
