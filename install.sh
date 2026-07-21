@@ -98,6 +98,7 @@ brew_install_cli() {
     direnv
     just
     jq
+    tree-sitter-cli
   )
   log "Installing CLI packages: ${pkgs[*]}"
   brew install "${pkgs[@]}" || true
@@ -171,7 +172,7 @@ pacman_install_cli() {
     return
   fi
 
-  local pkgs=(ripgrep fd neovim tmux git-delta direnv just jq)
+  local pkgs=(ripgrep fd neovim tmux git-delta direnv just jq tree-sitter-cli)
 
   if [ "${PACMAN_AUTO_INSTALL:-0}" = "1" ]; then
     log "Installing CLI packages via pacman: ${pkgs[*]}"

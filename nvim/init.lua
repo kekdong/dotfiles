@@ -135,6 +135,8 @@ require("lazy").setup({
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    lazy = false,
     build = ":TSUpdate",
     dependencies = {
       {
@@ -159,13 +161,33 @@ require("lazy").setup({
         end,
       },
     },
-    opts = {
-      ensure_installed = { "lua", "markdown", "markdown_inline", "html" },
-      highlight = { enable = true },
-      indent = { enable = true, disable = { "markdown" } },
-    },
-    config = function(_, opts)
-      require("nvim-treesitter.configs").setup(opts)
+    config = function()
+      local treesitter = require("nvim-treesitter")
+      local parsers = { "lua", "markdown", "markdown_inline", "html" }
+
+      treesitter.setup({})
+
+      if vim.fn.executable("tree-sitter") == 1 then
+        treesitter.install(parsers)
+      else
+        vim.schedule(function()
+          vim.notify(
+            "nvim-treesitter requires tree-sitter-cli to install parsers",
+            vim.log.levels.WARN
+          )
+        end)
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "lua", "markdown", "html" },
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
+
+          if args.match ~= "markdown" then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
+      })
     end,
   },
   {

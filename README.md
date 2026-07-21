@@ -8,7 +8,7 @@ Nord 중심 테마로 정리한 개인용 Linux/macOS dotfiles.
 - **Zsh**: `zsh-snap` 기반 플러그인 로딩, Powerlevel10k 프롬프트(agnoster 스타일, Nord 팔레트).
 
 ## 선행 요구 사항
-- `git`, `zsh`, `tmux`, `neovim`, `pyenv`
+- `git`, `zsh`, `tmux`, `neovim`, `tree-sitter-cli`, `pyenv`
 - Nerd Font 계열 폰트(프롬프트·상태바의 powerline 글리프용 권장)
 
 ## 설치
@@ -16,7 +16,7 @@ Nord 중심 테마로 정리한 개인용 Linux/macOS dotfiles.
 ./install.sh
 ```
 - 심볼릭 링크 생성만 수행합니다. 최초 실행 후 `zsh`를 다시 열고, 실행 중인 `tmux` 세션이 있다면 `tmux source-file ~/.tmux.conf`로 갱신하세요.
-- Neovim은 첫 실행 시 `lazy.nvim`과 지정된 플러그인이 자동 부트스트랩됩니다.
+- Neovim은 첫 실행 시 `lazy.nvim`, `nvim-treesitter`의 `main` 브랜치와 지정된 parser를 자동 부트스트랩합니다.
 
 ## 참고
 - macOS는 Homebrew(`/opt/homebrew`) 경로를 자동으로 앞에 둡니다.
