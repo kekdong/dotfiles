@@ -161,6 +161,11 @@ if [[ -o interactive ]]; then
 
   # Completions and plugins
   znap source zsh-users/zsh-completions
+  if (( DOTFILES_ENABLE_TRUECOLOR )); then
+    typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#637981'
+  else
+    typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
+  fi
   znap source zsh-users/zsh-autosuggestions
   znap source Aloxaf/fzf-tab
   znap source zsh-users/zsh-syntax-highlighting
