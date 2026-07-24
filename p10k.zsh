@@ -1,13 +1,13 @@
-# Powerlevel10k preset approximating agnoster with Nord colors and TTY fallbacks
+# Powerlevel10k preset approximating agnoster with Solarized Osaka colors and TTY fallbacks
 
 typeset -g POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-typeset -g POWERLEVEL9K_COLOR_SCHEME='nord'
+typeset -g POWERLEVEL9K_COLOR_SCHEME='dark'
 
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(os_icon dir vcs)
 typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time pyenv time)
 
-# Nord-aligned colors
+# Solarized Osaka ANSI colors
 typeset -g POWERLEVEL9K_DIR_BACKGROUND=4
 typeset -g POWERLEVEL9K_VCS_BACKGROUND=6
 # Remove background only for OS icon segment (keep others as-is)

@@ -1,4 +1,4 @@
-# Zsh configuration optimized for Nord-themed environments
+# Zsh configuration optimized for Solarized Osaka Dark environments
 
 export ZDOTDIR="${ZDOTDIR:-$HOME}"
 export EDITOR="nvim"
@@ -167,7 +167,7 @@ if [[ -o interactive ]]; then
 
   # Native completion cache
 
-  # Prompt (Powerlevel10k with Nord accents)
+  # Prompt (Powerlevel10k with Solarized Osaka accents)
   if [ ! -f "$HOME/.p10k.zsh" ]; then
     ln -sf "$HOME/.dotfiles/p10k.zsh" "$HOME/.p10k.zsh"
   fi
@@ -193,6 +193,15 @@ elif command -v rg >/dev/null 2>&1; then
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   export FZF_ALT_C_COMMAND="rg --files --hidden -g '!.git' | xargs -r dirname | sort -u"
 fi
+
+# Solarized Osaka Dark palette for fzf.
+export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:-} \
+  --color=bg+:#002c38,bg:#001419,border:#063540 \
+  --color=fg:#9eabac,gutter:#001419,header:#c94c16 \
+  --color=hl+:#c94c16,hl:#c94c16,info:#637981 \
+  --color=marker:#c94c16,pointer:#c94c16,prompt:#c94c16 \
+  --color=query:#9eabac:regular,scrollbar:#063540 \
+  --color=separator:#063540,spinner:#c94c16"
 
 if [[ -o interactive ]]; then
   # fzf-tab styles

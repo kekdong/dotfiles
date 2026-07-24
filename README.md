@@ -1,11 +1,12 @@
 # dotfiles
 
-Nord 중심 테마로 정리한 개인용 Linux/macOS dotfiles.
+Solarized Osaka Dark 중심 테마로 정리한 개인용 Linux/macOS dotfiles.
 
 ## 구성 요소
-- **tmux**: TPM과 `arcticicestudio/nord-tmux` 테마를 사용.
-- **Neovim**: `lazy.nvim` 플러그인 매니저, `shaunsingh/nord.nvim`, `lualine.nvim` 등을 포함.
-- **Zsh**: `zsh-snap` 기반 플러그인 로딩, Powerlevel10k 프롬프트(agnoster 스타일, Nord 팔레트).
+- **WezTerm/tmux**: Solarized Osaka Dark 팔레트와 Nerd Font/ASCII 폴백을 사용.
+- **Neovim**: `lazy.nvim` 플러그인 매니저, `craftzdog/solarized-osaka.nvim`, `lualine.nvim` 등을 포함.
+- **Zsh**: `zsh-snap` 기반 플러그인 로딩, Powerlevel10k 프롬프트(agnoster 스타일, Solarized Osaka 팔레트).
+- **CLI**: `fzf`는 Solarized Osaka Dark 팔레트, `bat`은 내장 Solarized Dark 테마를 사용.
 
 ## 선행 요구 사항
 - `git`, `zsh`, `tmux`, `neovim`, `tree-sitter-cli`, `pyenv`

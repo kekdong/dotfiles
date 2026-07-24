@@ -1,7 +1,6 @@
-# bat configuration (uses built-in Nord theme)
+# bat configuration (uses the closest built-in Solarized dark theme)
 # See: bat --help, bat(1) manpage
 
---theme="Nord"
+--theme="Solarized (dark)"
 --style="numbers,changes,header"
 --italic-text=always
-

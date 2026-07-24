@@ -1,7 +1,7 @@
 # Daily Configuration Study Plan
 
 ## 현재 환경 요약
-- Nord 테마를 중심으로 `zsh`·`tmux`·`Neovim` 구성이 통일되어 있으며, `znap`과 `lazy.nvim`으로 경량 플러그인 관리를 수행 중.
+- Solarized Osaka Dark 테마를 중심으로 `zsh`·`tmux`·`Neovim` 구성이 통일되어 있으며, `znap`과 `lazy.nvim`으로 경량 플러그인 관리를 수행 중.
 - `pyenv`, `nvm`, `tmux`(TPM), Neovim 기본 플러그인(`gitsigns`, `fugitive`, `nvim-tree`)과 Powerlevel10k 프롬프트를 사용해 개발/머신러닝 워크플로를 구성.
 - `~/Workspace/Deep_Pocket_of_Daedalus` 프로젝트는 PyTorch 2.8, FastAPI, CCXT 기반 트레이딩/모니터링 파이프라인으로 Python 가상환경 중심의 작업 패턴을 보여줌.
 
@@ -25,7 +25,7 @@
 ## Day 4 — Oh My Tmux 기능 채택
 - **설정 요약:** `gpakosz/.tmux`에서 제공하는 상태바, 세션 복구 스크립트, 매크로 중 필요한 부분만 cherry-pick하여 `tmux.conf`에 반영.
 - **장점:** 가시성 높은 상태바, 세션 자동 복원, 표준화된 키맵을 통해 원격/로컬 환경 전환이 쉬워짐.
-- **Codex 메모:** 기존 Nord 테마 유지 위해 `status-left`, `status-right` 색상은 Nord 팔레트(#3B4252 등)로 맞춤 필요.
+- **Codex 메모:** 기존 Solarized Osaka Dark 테마 유지 위해 `status-left`, `status-right` 색상은 같은 팔레트(#002c38 등)로 맞춤 필요.
 
 ## Day 5 — CLI 필수 도구 세트 확장
 - **설정 요약:** `bat`, `fd`, `eza`, `zoxide`, `tldr` 등을 설치하고 zsh alias/function으로 통합.

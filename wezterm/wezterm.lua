@@ -2,10 +2,67 @@ local wezterm = require 'wezterm'
 
 local config = wezterm.config_builder()
 
+local solarized_osaka = {
+  foreground = '#839395',
+  background = '#001419',
+  cursor_bg = '#839395',
+  cursor_border = '#839395',
+  cursor_fg = '#001419',
+  selection_bg = '#1a6397',
+  selection_fg = '#839395',
+  ansi = {
+    '#001014',
+    '#db302d',
+    '#849900',
+    '#b28500',
+    '#268bd3',
+    '#d23681',
+    '#29a298',
+    '#9eabac',
+  },
+  brights = {
+    '#001419',
+    '#db302d',
+    '#849900',
+    '#b28500',
+    '#268bd3',
+    '#d23681',
+    '#29a298',
+    '#839395',
+  },
+  tab_bar = {
+    inactive_tab_edge = '#002c38',
+    background = '#191b28',
+    active_tab = {
+      fg_color = '#268bd3',
+      bg_color = '#001419',
+    },
+    inactive_tab = {
+      bg_color = '#002c38',
+      fg_color = '#063540',
+    },
+    inactive_tab_hover = {
+      bg_color = '#002c38',
+      fg_color = '#268bd3',
+    },
+    new_tab = {
+      fg_color = '#268bd3',
+      bg_color = '#191b28',
+    },
+    new_tab_hover = {
+      fg_color = '#002c38',
+      bg_color = '#268bd3',
+    },
+  },
+}
+
 -- Default to XWayland for IME/focus stability on KDE Wayland.
 -- Re-evaluate Wayland with the checklist in docs/wezterm-wayland.md.
 config.enable_wayland = false
-config.color_scheme = 'Nord (base16)'
+config.color_schemes = {
+  ['Solarized Osaka Dark'] = solarized_osaka,
+}
+config.color_scheme = 'Solarized Osaka Dark'
 config.harfbuzz_features = { 'liga=0', 'clig=0', 'calt=0' }
 config.hide_tab_bar_if_only_one_tab = true
 
@@ -70,50 +127,6 @@ if is_apple then
   config.native_macos_fullscreen_mode = true
   config.font_size = 14.0
 end
-
-local nord = {
-  polar0 = '#2E3440',
-  polar1 = '#3B4252',
-  polar2 = '#434C5E',
-  polar3 = '#4C566A',
-  frost1 = '#81A1C1',
-  frost2 = '#88C0D0',
-  snow1 = '#E5E9F0',
-  snow2 = '#ECEFF4',
-}
-
-config.colors = {
-  tab_bar = {
-    background = nord.polar0,
-    inactive_tab_edge = nord.polar1,
-    active_tab = {
-      bg_color = nord.polar2,
-      fg_color = nord.snow2,
-      intensity = 'Normal',
-      underline = 'None',
-      italic = false,
-      strikethrough = false,
-    },
-    inactive_tab = {
-      bg_color = nord.polar0,
-      fg_color = nord.snow1,
-    },
-    inactive_tab_hover = {
-      bg_color = nord.polar1,
-      fg_color = nord.snow2,
-      italic = false,
-    },
-    new_tab = {
-      bg_color = nord.polar0,
-      fg_color = nord.frost1,
-    },
-    new_tab_hover = {
-      bg_color = nord.polar1,
-      fg_color = nord.frost2,
-      italic = false,
-    },
-  },
-}
 
 if is_apple then
   wezterm.on('user-var-changed', function(window, pane, name, value)

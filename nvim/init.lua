@@ -1,4 +1,4 @@
--- Neovim configuration migrated from legacy vimrc with Nord theme
+-- Neovim configuration migrated from legacy vimrc with Solarized Osaka Dark
 
 -- Set leader early so plugin keymaps use it
 vim.g.mapleader = " "
@@ -18,14 +18,21 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "shaunsingh/nord.nvim",
+    "craftzdog/solarized-osaka.nvim",
+    lazy = false,
     priority = 1000,
-    config = function()
-      vim.g.nord_contrast = true
-      vim.g.nord_borders = true
-      vim.g.nord_disable_background = false
+    opts = {
+      transparent = false,
+      terminal_colors = true,
+      styles = {
+        sidebars = "dark",
+        floats = "dark",
+      },
+    },
+    config = function(_, opts)
+      require("solarized-osaka").setup(opts)
       vim.opt.termguicolors = true
-      vim.cmd.colorscheme("nord")
+      vim.cmd.colorscheme("solarized-osaka")
     end,
   },
   {
@@ -79,7 +86,7 @@ require("lazy").setup({
 
       require("lualine").setup({
         options = {
-          theme = "nord",
+          theme = "solarized-osaka",
           icons_enabled = true,
           section_separators = section_separators,
           component_separators = component_separators,
