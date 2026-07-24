@@ -8,7 +8,7 @@ local solarized_osaka = {
   cursor_bg = '#839395',
   cursor_border = '#839395',
   cursor_fg = '#001419',
-  selection_bg = '#1a6397',
+  selection_bg = '#002c38',
   selection_fg = '#839395',
   ansi = {
     '#001014',
@@ -21,7 +21,7 @@ local solarized_osaka = {
     '#9eabac',
   },
   brights = {
-    '#001419',
+    '#576d74',
     '#db302d',
     '#849900',
     '#b28500',
@@ -39,7 +39,7 @@ local solarized_osaka = {
     },
     inactive_tab = {
       bg_color = '#002c38',
-      fg_color = '#063540',
+      fg_color = '#637981',
     },
     inactive_tab_hover = {
       bg_color = '#002c38',

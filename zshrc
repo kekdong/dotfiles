@@ -161,10 +161,13 @@ if [[ -o interactive ]]; then
 
   # Completions and plugins
   znap source zsh-users/zsh-completions
+  typeset -gA ZSH_HIGHLIGHT_STYLES
   if (( DOTFILES_ENABLE_TRUECOLOR )); then
     typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#637981'
+    ZSH_HIGHLIGHT_STYLES[comment]='fg=#637981'
   else
     typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
+    ZSH_HIGHLIGHT_STYLES[comment]='fg=7'
   fi
   znap source zsh-users/zsh-autosuggestions
   znap source Aloxaf/fzf-tab

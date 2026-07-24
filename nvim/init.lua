@@ -28,6 +28,23 @@ require("lazy").setup({
         sidebars = "dark",
         floats = "dark",
       },
+      on_highlights = function(highlights)
+        local staged_kinds = {
+          "Add",
+          "Change",
+          "Delete",
+          "Changedelete",
+          "Topdelete",
+          "Untracked",
+        }
+        for _, kind in ipairs(staged_kinds) do
+          for _, suffix in ipairs({ "", "Nr", "Ln", "Cul" }) do
+            highlights["GitSignsStaged" .. kind .. suffix] = {
+              link = "GitSigns" .. kind .. suffix,
+            }
+          end
+        end
+      end,
     },
     config = function(_, opts)
       require("solarized-osaka").setup(opts)
@@ -90,6 +107,13 @@ require("lazy").setup({
           icons_enabled = true,
           section_separators = section_separators,
           component_separators = component_separators,
+        },
+        sections = {
+          lualine_b = {
+            "branch",
+            { "diff", colored = false },
+            { "diagnostics", colored = false },
+          },
         },
       })
     end,
