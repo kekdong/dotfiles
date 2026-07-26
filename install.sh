@@ -327,6 +327,7 @@ ensure_znap
 
 log "Linking Neovim configuration"
 link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
+link_file "$DOTFILES_DIR/nvim/lazy-lock.json" "$TARGET_HOME/.config/nvim/lazy-lock.json"
 
 log "Linking bat configuration"
 link_file "$DOTFILES_DIR/bat/config" "$TARGET_HOME/.config/bat/config"
