@@ -326,11 +326,17 @@ opt.backspace = "start,indent,eol"
 opt.clipboard = "unnamedplus"
 opt.updatetime = 300
 
--- Prefer Neovim 0.10+ built-in OSC52 clipboard provider when available
-if vim.fn.has("nvim-0.10") == 1 then
-  -- This tells Neovim to use the built-in OSC52 provider for '+/* registers'
-  -- and works well with modern terminals (including WezTerm).
+-- Prefer the built-in OSC52 clipboard provider when available.
+-- The string preset requires Neovim 0.11+; 0.10 only accepts the dict form.
+if vim.fn.has("nvim-0.11") == 1 then
   vim.g.clipboard = "osc52"
+elseif vim.fn.has("nvim-0.10") == 1 then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+  }
 end
 
 -- Keymaps
