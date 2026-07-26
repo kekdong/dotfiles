@@ -336,6 +336,9 @@ log "Linking WezTerm configuration"
 link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.wezterm.lua"
 link_file "$DOTFILES_DIR/wezterm/wezterm.lua" "$TARGET_HOME/.config/wezterm/wezterm.lua"
 
+log "Linking helper scripts"
+link_file "$DOTFILES_DIR/scripts/tmux-fzf-open.sh" "$TARGET_HOME/.local/bin/tmux-fzf-open"
+
 log "Linking LazyDocker configuration"
 link_file "$DOTFILES_DIR/config/lazydocker/config.yml" "$TARGET_HOME/.config/lazydocker/config.yml"
 
