@@ -151,36 +151,32 @@ else
 fi
 
 if [[ -o interactive ]]; then
-  # Bootstrap zsh-snap (fast plugin manager)
+  # zsh-snap is bootstrapped by install.sh; never clone from the network
+  # during shell startup.
   ZSH_SNAP_ROOT="$HOME/.zsh/plugins"
-  if [ ! -f "$ZSH_SNAP_ROOT/znap/znap.zsh" ]; then
-    mkdir -p "$ZSH_SNAP_ROOT"
-    git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git "$ZSH_SNAP_ROOT/znap"
-  fi
-  source "$ZSH_SNAP_ROOT/znap/znap.zsh"
+  if [[ -r "$ZSH_SNAP_ROOT/znap/znap.zsh" ]]; then
+    source "$ZSH_SNAP_ROOT/znap/znap.zsh"
 
-  # Completions and plugins
-  znap source zsh-users/zsh-completions
-  typeset -gA ZSH_HIGHLIGHT_STYLES
-  if (( DOTFILES_ENABLE_TRUECOLOR )); then
-    typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#637981'
-    ZSH_HIGHLIGHT_STYLES[comment]='fg=#637981'
+    # Completions and plugins
+    znap source zsh-users/zsh-completions
+    typeset -gA ZSH_HIGHLIGHT_STYLES
+    if (( DOTFILES_ENABLE_TRUECOLOR )); then
+      typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#637981'
+      ZSH_HIGHLIGHT_STYLES[comment]='fg=#637981'
+    else
+      typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
+      ZSH_HIGHLIGHT_STYLES[comment]='fg=7'
+    fi
+    znap source zsh-users/zsh-autosuggestions
+    znap source Aloxaf/fzf-tab
+    znap source zsh-users/zsh-syntax-highlighting
+
+    # Prompt (Powerlevel10k with Solarized Osaka accents)
+    znap prompt romkatv/powerlevel10k
+    [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
   else
-    typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
-    ZSH_HIGHLIGHT_STYLES[comment]='fg=7'
+    print -u2 "dotfiles: zsh-snap not found; run install.sh from your dotfiles checkout to bootstrap plugins"
   fi
-  znap source zsh-users/zsh-autosuggestions
-  znap source Aloxaf/fzf-tab
-  znap source zsh-users/zsh-syntax-highlighting
-
-  # Native completion cache
-
-  # Prompt (Powerlevel10k with Solarized Osaka accents)
-  if [ ! -f "$HOME/.p10k.zsh" ]; then
-    ln -sf "$HOME/.dotfiles/p10k.zsh" "$HOME/.p10k.zsh"
-  fi
-  znap prompt romkatv/powerlevel10k
-  [[ -r "$HOME/.p10k.zsh" ]] && source "$HOME/.p10k.zsh"
 
   # fzf bindings and defaults (Arch Linux paths)
   if [ -f /usr/share/fzf/completion.zsh ]; then

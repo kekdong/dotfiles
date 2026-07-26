@@ -14,6 +14,37 @@ link_file() {
   log "linked $(basename "$source_path") -> $target_path"
 }
 
+ensure_znap() {
+  local znap_root="$TARGET_HOME/.zsh/plugins"
+  local znap_dir="$znap_root/znap"
+
+  if ! command -v git >/dev/null 2>&1; then
+    log "Warning: git not found; skipping zsh-snap bootstrap"
+    return
+  fi
+
+  if [ -f "$znap_dir/znap.zsh" ]; then
+    log "zsh-snap already present at $znap_dir"
+  else
+    log "Bootstrapping zsh-snap (znap)"
+    mkdir -p "$znap_root"
+    git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git "$znap_dir" \
+      || { log "Warning: failed to clone zsh-snap repository"; return; }
+  fi
+
+  # Pre-fetch plugins so the first interactive shell needs no network.
+  if command -v zsh >/dev/null 2>&1; then
+    log "Pre-fetching zsh plugins via znap clone"
+    zsh -c "source '$znap_dir/znap.zsh' && znap clone \
+      zsh-users/zsh-completions \
+      zsh-users/zsh-autosuggestions \
+      Aloxaf/fzf-tab \
+      zsh-users/zsh-syntax-highlighting \
+      romkatv/powerlevel10k" \
+      || log "Warning: failed to pre-fetch zsh plugins (znap will fetch them on first shell)"
+  fi
+}
+
 ensure_pyenv() {
   local pyenv_root="$TARGET_HOME/.pyenv"
   if [ -d "$pyenv_root" ]; then
@@ -291,6 +322,8 @@ ensure_nvm
 log "Linking zsh configuration"
 link_file "$DOTFILES_DIR/zshrc" "$TARGET_HOME/.zshrc"
 link_file "$DOTFILES_DIR/p10k.zsh" "$TARGET_HOME/.p10k.zsh"
+
+ensure_znap
 
 log "Linking Neovim configuration"
 link_file "$DOTFILES_DIR/nvim/init.lua" "$TARGET_HOME/.config/nvim/init.lua"
