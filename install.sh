@@ -164,22 +164,6 @@ install_sarasa_nerd_font_macos() {
   fi
 }
 
-case "$OS_NAME" in
-  Darwin)
-    log "macOS detected"
-    ensure_homebrew
-    brew_install_cli
-    install_im_select_cli
-    install_sarasa_nerd_font_macos
-    ;;
-  Linux)
-    log "Linux detected"
-    ;;
-  *)
-    log "Warning: unsupported OS ($OS_NAME). Proceeding with generic setup."
-    ;;
-esac
-
 pacman_install_cli() {
   if ! command -v pacman >/dev/null 2>&1; then
     return
@@ -285,12 +269,23 @@ install_sarasa_nerd_font_arch() {
 }
 
 case "$OS_NAME" in
+  Darwin)
+    log "macOS detected"
+    ensure_homebrew
+    brew_install_cli
+    install_im_select_cli
+    install_sarasa_nerd_font_macos
+    ;;
   Linux)
+    log "Linux detected"
     pacman_install_cli
     install_sarasa_nerd_font_arch
     install_wezterm_arch
     ;;
- esac
+  *)
+    log "Warning: unsupported OS ($OS_NAME). Proceeding with generic setup."
+    ;;
+esac
 
 log "Linking tmux configuration"
 link_file "$DOTFILES_DIR/tmux.conf" "$TARGET_HOME/.tmux.conf"
