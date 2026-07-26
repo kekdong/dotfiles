@@ -109,13 +109,16 @@ elif [[ ${DOTFILES_FORCE_TTY_FALLBACK:-} == 1 ]]; then
   DOTFILES_IS_RAW_TTY=1
 fi
 
-if command -v tput >/dev/null 2>&1; then
-  DOTFILES_TERM_COLORS=$(tput colors 2>/dev/null || printf '0')
-  if [[ ${DOTFILES_TERM_COLORS:-0} -ge 256 ]]; then
-    DOTFILES_HAS_TRUECOLOR=1
-  fi
+# Trust the terminal's own truecolor advertisement instead of guessing
+# from the 256-color count. WezTerm sets COLORTERM directly and tmux >= 3.2
+# propagates it into panes when the outer terminal supports RGB.
+# For terminals that support truecolor but don't advertise it, set
+# DOTFILES_FORCE_TRUECOLOR=1.
+if [[ ${COLORTERM:-} == (truecolor|24bit) ]]; then
+  DOTFILES_HAS_TRUECOLOR=1
+elif [[ ${TERM:-} == (*-direct*|wezterm|xterm-kitty|alacritty) ]]; then
+  DOTFILES_HAS_TRUECOLOR=1
 fi
-unset DOTFILES_TERM_COLORS
 
 if [[ ${DOTFILES_FORCE_TRUECOLOR:-} == 0 ]]; then
   DOTFILES_HAS_TRUECOLOR=0
@@ -149,11 +152,10 @@ fi
 
 export DOTFILES_ENABLE_NERD_FONT DOTFILES_ENABLE_TRUECOLOR DOTFILES_IS_RAW_TTY DOTFILES_UI_PROFILE
 
-# Hint 24-bit color support to apps that check COLORTERM
-if (( DOTFILES_ENABLE_TRUECOLOR )); then
+# Hint 24-bit color support to apps that check COLORTERM.
+# Never unset or overwrite a terminal-provided COLORTERM.
+if (( DOTFILES_ENABLE_TRUECOLOR )) && [[ -z ${COLORTERM:-} ]]; then
   export COLORTERM=truecolor
-else
-  unset COLORTERM
 fi
 
 if [[ -o interactive ]]; then
