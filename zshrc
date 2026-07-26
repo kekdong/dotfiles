@@ -7,9 +7,8 @@ export VISUAL="$EDITOR"
 # Deduplicate search paths before manipulating PATH
 typeset -U path PATH
 
-# Locale
+# Locale: set LANG only; leave LC_* overridable per category
 export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
 
 # Telekasten vault (overridable)
 if [ -z "${TELEKASTEN_VAULT:-}" ]; then
