@@ -56,9 +56,9 @@ local solarized_osaka = {
   },
 }
 
--- Default to XWayland for IME/focus stability on KDE Wayland.
--- Re-evaluate Wayland with the checklist in docs/wezterm-wayland.md.
-config.enable_wayland = false
+-- Wayland-native (text-input-v3). If IME desync regresses, set back to
+-- false and see the rollback checklist in docs/wezterm-wayland.md.
+config.enable_wayland = true
 config.color_schemes = {
   ['Solarized Osaka Dark'] = solarized_osaka,
 }

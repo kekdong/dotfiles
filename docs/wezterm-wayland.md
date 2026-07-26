@@ -61,9 +61,9 @@ RUST_BACKTRACE=1 wezterm start --always-new-process
 
 ## Wayland Re-enable Checklist (IME/Focus Regression)
 
-Current default in this repo is `config.enable_wayland = false` due to intermittent IME desync after app/workspace switches (notably returning from Chromium).
+Current default in this repo is `config.enable_wayland = true` (Wayland-native via text-input-v3). It was previously disabled due to intermittent IME desync after app/workspace switches (notably returning from Chromium); if that regresses, use the rollback rule below.
 
-When trying Wayland again, run this checklist before keeping the change.
+When re-evaluating Wayland after a rollback, run this checklist before keeping the change.
 
 1) Switch config
 
