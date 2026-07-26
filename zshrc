@@ -33,10 +33,16 @@ case "$(uname -s)" in
   Linux)
     export OS_FLAVOR="linux"
     alias ls='ls --color=auto'
-    # Podman (rootless) Docker-compatible socket for tools like lazydocker
-    # Prefer $XDG_RUNTIME_DIR if available; fallback to /run/user/$UID
-    # Example socket path: $XDG_RUNTIME_DIR/podman/podman.sock
-    export DOCKER_HOST="unix://${XDG_RUNTIME_DIR:-/run/user/$UID}/podman/podman.sock"
+    # Podman (rootless) Docker-compatible socket for tools like lazydocker.
+    # Only claim DOCKER_HOST when the socket actually exists and nothing
+    # else has set it (keeps real-Docker setups working).
+    if [ -z "${DOCKER_HOST:-}" ]; then
+      podman_sock="${XDG_RUNTIME_DIR:-/run/user/$UID}/podman/podman.sock"
+      if [ -S "$podman_sock" ]; then
+        export DOCKER_HOST="unix://$podman_sock"
+      fi
+      unset podman_sock
+    fi
     ;;
   *)
     export OS_FLAVOR="unknown"
