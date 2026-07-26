@@ -45,24 +45,6 @@ ensure_znap() {
   fi
 }
 
-ensure_pyenv() {
-  local pyenv_root="$TARGET_HOME/.pyenv"
-  if [ -d "$pyenv_root" ]; then
-    log "pyenv already present at $pyenv_root"
-    return
-  fi
-
-  if ! command -v git >/dev/null 2>&1; then
-    log "Warning: git not found; skipping pyenv bootstrap"
-    return
-  fi
-
-  log "Bootstrapping pyenv"
-  git clone --depth 1 https://github.com/pyenv/pyenv.git "$pyenv_root" \
-    && log "pyenv installed to $pyenv_root" \
-    || log "Warning: failed to clone pyenv repository"
-}
-
 ensure_nvm() {
   local nvm_dir="$TARGET_HOME/.nvm"
   if [ -d "$nvm_dir" ]; then
@@ -334,7 +316,6 @@ ensure_tpm() {
 
 ensure_tpm
 
-ensure_pyenv
 ensure_nvm
 
 log "Linking zsh configuration"
