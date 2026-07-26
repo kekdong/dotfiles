@@ -203,7 +203,25 @@ pacman_install_cli() {
     return
   fi
 
-  local pkgs=(ripgrep fd neovim tmux git-delta direnv just jq tree-sitter-cli)
+  # Keep in sync with the brew package list above.
+  local pkgs=(
+    git
+    zsh
+    neovim
+    tmux
+    ripgrep
+    fd
+    fzf
+    bat
+    eza
+    zoxide
+    tldr
+    git-delta
+    direnv
+    just
+    jq
+    tree-sitter-cli
+  )
 
   if [ "${PACMAN_AUTO_INSTALL:-0}" = "1" ]; then
     log "Installing CLI packages via pacman: ${pkgs[*]}"
@@ -413,27 +431,3 @@ fi
 log "Setup complete. Launch zsh and run 'tmux source-file ~/.tmux.conf' if tmux was already running."
 log "For Neovim plugin installation, start nvim; lazy.nvim will bootstrap itself automatically."
 log "Tip: On Arch, set PACMAN_AUTO_INSTALL=1 to auto-install CLI essentials."
-
-# Optional: Arch package helper for Day5 CLI essentials
-arch_install_day5() {
-  if ! command -v pacman >/dev/null 2>&1; then
-    log "pacman not found; skip Day5 helper"
-    return
-  fi
-  local pkgs=(bat fd lsd tldr zoxide)
-  # exa is deprecated upstream; prefer eza if available in repo
-  if pacman -Si eza >/dev/null 2>&1; then
-    pkgs+=(eza)
-  else
-    pkgs+=(exa)
-  fi
-  log "Day5 suggested packages: ${pkgs[*]}"
-  if [ "${PACMAN_AUTO_INSTALL:-0}" = "1" ]; then
-    sudo pacman -S --needed "${pkgs[@]}"
-  else
-    log "To install Day5 set: sudo pacman -S --needed ${pkgs[*]}"
-  fi
-}
-
-# Uncomment to auto-run (requires sudo):
-# arch_install_day5
