@@ -85,7 +85,7 @@ fi
 HISTSIZE=5000
 SAVEHIST=5000
 HISTFILE="$HOME/.zsh_history"
-setopt HIST_IGNORE_DUPS HIST_REDUCE_BLANKS SHARE_HISTORY
+setopt HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS SHARE_HISTORY
 
 # Performance options
 setopt prompt_subst
@@ -174,8 +174,18 @@ if [[ -o interactive ]]; then
       typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=7'
       ZSH_HIGHLIGHT_STYLES[comment]='fg=7'
     fi
-    znap source zsh-users/zsh-autosuggestions
+
+    # fzf-tab must load after completion initialization and before plugins
+    # that wrap ZLE widgets, including zsh-autosuggestions.
     znap source Aloxaf/fzf-tab
+
+    # Prefer lightweight in-memory context, then history, then completion.
+    # Suggestions are asynchronous; skip re-fetching while pasting long buffers.
+    typeset -ga ZSH_AUTOSUGGEST_STRATEGY
+    ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
+    typeset -g ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=100
+
+    znap source zsh-users/zsh-autosuggestions
     znap source zsh-users/zsh-syntax-highlighting
 
     # Prompt (Powerlevel10k with Solarized Osaka accents)
@@ -222,8 +232,17 @@ if [[ -o interactive ]]; then
 
   # Keybindings
   bindkey -e
-  bindkey "^P" up-line-or-history
-  bindkey "^N" down-line-or-history
+  autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+  zle -N up-line-or-beginning-search
+  zle -N down-line-or-beginning-search
+  bindkey "^P" up-line-or-beginning-search
+  bindkey "^N" down-line-or-beginning-search
+  bindkey "^[[A" up-line-or-beginning-search
+  bindkey "^[[B" down-line-or-beginning-search
+  [[ -n ${terminfo[kcuu1]:-} ]] &&
+    bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
+  [[ -n ${terminfo[kcud1]:-} ]] &&
+    bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
 fi
 
 # Aliases
